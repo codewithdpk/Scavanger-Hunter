@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFF"
-    tools:context=".activities.AuthActivity">
+    tools:context=".activities.RegistrationActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -65,64 +65,21 @@
             android:layout_marginTop="30dp"
             android:orientation="vertical">
 
-            <Button
-                android:id="@+id/btn_continue_with_google"
+            <EditText
+                android:id="@+id/edt_fullname"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:background="@drawable/btn_continue_with_google"
-                android:text="Continue with Google"
-                android:fontFamily="@font/poppins_semibold"
-                android:textColor="#FFF"
-                android:textAlignment="center"
-                android:textAllCaps="false"
-                android:layout_marginVertical="10dp"
+                android:background="@drawable/input_one"
+                android:padding="10dp"
+                android:hint="Fullname"
+                android:fontFamily="@font/poppins_regular"
                 android:textSize="15dp"
-                />
+                android:textColor="#c4c4c4"
+                android:inputType="text"
+                android:textColorHint="#c4c4c4"
 
-            <Button
-                android:id="@+id/btn_continue_with_facebook"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@drawable/btn_continue_with_facebook"
-                android:text="Continue with Facebook"
-                android:fontFamily="@font/poppins_semibold"
-                android:textColor="#FFF"
-                android:textAlignment="center"
-                android:textAllCaps="false"
                 android:layout_marginVertical="10dp"
-                android:textSize="15dp"
                 />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <View
-                    android:layout_width="145dp"
-                    android:layout_height="1dp"
-                    android:layout_gravity="center_vertical"
-                    android:background="#c4c4c4"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="OR"
-                    android:layout_gravity="center_vertical"
-
-                    android:textSize="18dp"
-                    android:textColor="#c4c4c4"
-                    android:layout_marginHorizontal="20dp"
-                    />
-
-                <View
-                    android:layout_width="145dp"
-                    android:layout_height="1dp"
-                    android:layout_gravity="center_vertical"
-
-                    android:background="#c4c4c4"/>
-
-            </LinearLayout>
 
             <EditText
                 android:id="@+id/edt_email"
@@ -156,29 +113,38 @@
 
                 />
 
+            <EditText
+                android:id="@+id/edt_confirm_password"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/input_one"
+                android:padding="10dp"
+                android:inputType="textPassword"
+                android:hint="Confirm Password"
+                android:fontFamily="@font/poppins_regular"
+                android:textSize="15dp"
+                android:textColor="#c4c4c4"
+                android:textColorHint="#c4c4c4"
+                android:layout_marginVertical="10dp"
+
+                />
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="10dp">
 
                 <TextView
-                    android:id="@+id/txt_signup"
+                    android:id="@+id/txt_signin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_semibold"
-                    android:text="Sign up"
+                    android:text="Sign in"
                     android:textColor="@color/primary"
 
                     android:layout_alignParentLeft="true"/>
 
-                <TextView
-                    android:id="@+id/txt_forgot_password"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_semibold"
-                    android:text="Forgot Password?"
-                    android:textColor="@color/primary"
-                    android:layout_alignParentRight="true"/>
+
 
             </RelativeLayout>
 
@@ -186,11 +152,11 @@
 
 
             <Button
-                android:id="@+id/btn_signin"
+                android:id="@+id/btn_signup"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:background="@drawable/btn_primary"
-                android:text="Continue"
+                android:text="Sign up"
                 android:fontFamily="@font/poppins_semibold"
                 android:textColor="#FFF"
                 android:textAlignment="center"
