@@ -16,7 +16,9 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -27,8 +29,11 @@ public class APIClient {
 
     public static Retrofit getClient() {
         if (retrofit == null) {
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .connectTimeout(100, TimeUnit.SECONDS)
+                    .readTimeout(100,TimeUnit.SECONDS).build();
             retrofit = new Retrofit.Builder()
-                    .baseUrl(endPoints.BASE_URL)
+                    .baseUrl(endPoints.BASE_URL).client(client)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }

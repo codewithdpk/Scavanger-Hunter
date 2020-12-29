@@ -25,9 +25,11 @@ import com.deepak.scavengerhunter.activities.APIs.APIClient;
 import com.deepak.scavengerhunter.activities.APIs.EndPoints;
 import com.deepak.scavengerhunter.activities.APIs.ServiceInterfaces.RegistrationService;
 import com.deepak.scavengerhunter.activities.APIs.ServiceModals.UserRegistrationResponse;
+import com.deepak.scavengerhunter.activities.classes.Modals.RegisterUser;
 import com.deepak.scavengerhunter.activities.classes.Modals.User;
 import com.deepak.scavengerhunter.activities.classes.Utils;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -149,21 +151,28 @@ public class RegistrationActivity extends AppCompatActivity {
 
         RegistrationService service = apiClient.create(RegistrationService.class);
         // Calling '/api/users/2'
-        Call<User> callSync = service.UserRegistration(name,email,password,googleid,facebookid,image_url,mode);
+
+
+
+        Call<User> callSync = service.UserRegistration(new RegisterUser(name,email,password,googleid,facebookid,image_url,mode))    ;
 
         callSync.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 Log.d("RETROFIT:", response.toString());
+                mProgressDialog.dismiss();
             }
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
                 //Handle failure
                 Log.e("RETROFIT:", t.toString());
+                mProgressDialog.dismiss();
+
             }
         });
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+        mProgressDialog.dismiss();
     }
 }
