@@ -41,7 +41,7 @@ public class AuthActivity extends AppCompatActivity {
         // the GoogleSignInAccount will be non-null.
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         //updateUI(account); Do something..
-        Toast.makeText(this, account.toString(), Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, account.toString(), Toast.LENGTH_LONG).show();
     }
 
     GoogleSignInClient mGoogleSignInClient;

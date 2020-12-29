@@ -4,8 +4,8 @@
     <font
         android:fontStyle="normal"
         android:fontWeight="400"
-        android:font="@font/poppins_regular"
+        android:font="@font/sfpro"
         app:fontStyle="normal"
-        app:font="@font/poppins_regular"
+        app:font="@font/sfpro"
         />
 </font-family>
