@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.activites.HomeActivity">
+
+    <fragment xmlns:map="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".activities.activites.HomeActivity" />
+
+    <RelativeLayout
+        android:id="@+id/header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:paddingHorizontal="25dp"
+        android:background="#FFF">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:paddingVertical="15dp">
+            <androidx.cardview.widget.CardView
+                android:id="@+id/user_icon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                app:cardCornerRadius="25dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                app:cardPreventCornerOverlap="false">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/image_person"/>
+            </androidx.cardview.widget.CardView>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/font_semibold"
+                    android:textColor="#000"
+                    android:textSize="18dp"
+                    android:layout_gravity="left"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"
+                    android:text="Where to hunt today?"
+                    />
+
+
+
+
+            <ImageView
+                android:id="@+id/ic_add_new_post"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_plus"/>
+
+
+
+
+
+
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+    <View
+        android:id="@+id/view_header"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_below="@+id/header_layout"
+        android:background="@drawable/border_shadow"/>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/view_header"
+        android:layout_marginTop="40dp"
+        android:layout_marginHorizontal="25dp"
+        app:cardElevation="5dp"
+        app:cardCornerRadius="5dp"
+        app:cardBackgroundColor="#c4c4c4"
+        >
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+
+            android:background="@drawable/input_two"
+
+            android:fontFamily="@font/font_normal"
+            android:padding="15dp"
+            android:drawableRight="@drawable/ic_search"
+
+            android:textColor="@color/hint_color"
+            android:textColorHint="@color/hint_color"
+            android:hint="Search Places"
+
+            />
+
+    </androidx.cardview.widget.CardView>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</RelativeLayout>

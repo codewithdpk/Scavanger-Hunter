@@ -1,0 +1,67 @@
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <fragment
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context="com.sample.sishin.maplocation.MapsActivity" />
+
+        <ImageView
+            android:id="@+id/ic_back"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_back_arrow"
+            android:layout_gravity="left|top"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="25dp"/>
+        <LinearLayout
+            android:id="@+id/locationMarker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="30dp"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/locationMarkertext"
+                android:layout_width="130dp"
+                android:layout_height="30dp"
+                android:background="@drawable/rounded_corner_map"
+                android:gravity="center"
+                android:fontFamily="@font/font_normal"
+                android:textSize="10dp"
+                android:minWidth="250dp"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"
+                android:text=" Set your Location "
+                android:textColor="@android:color/white" />
+
+            <ImageView
+                android:id="@+id/imageMarker"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/pin" />
+        </LinearLayout>
+
+
+
+    </FrameLayout>
+
+    <include layout="@layout/addressbottomsheet"
+
+        />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

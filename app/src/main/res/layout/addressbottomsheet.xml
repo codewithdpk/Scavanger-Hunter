@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottom_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+
+    app:behavior_hideable="false"
+    app:behavior_peekHeight="200dp"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+    >
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/currentlocfab"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="right|bottom"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="10dp"
+        app:fabSize="mini"
+        android:src="@drawable/ic_plus"
+        android:contentDescription="TODO" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="5"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/locateaddress"
+                    android:layout_width="match_parent"
+                    android:layout_marginRight="10dp"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/font_normal"
+                    android:text="Dandelion Chocolate"
+                    android:textColor="#000000"
+                    android:textSize="13dp"
+                    android:drawableLeft="@drawable/ic_gps"
+                    android:layout_marginLeft="10dp"/>
+
+
+
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="#5d5d5d" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp">
+
+            <TextView
+                android:id="@+id/fillalldetailstext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/font_normal"
+                android:text="Fill proper address"
+                android:layout_marginLeft="20dp"
+                android:textColor="@color/toast_color"
+                android:textSize="10dp"/>
+            <EditText
+                android:id="@+id/houseplotfield"
+                android:layout_width="350dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/input_one"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="@font/font_normal"
+                android:textSize="10dp"
+                android:paddingLeft="10dp"
+                android:layout_below="@+id/fillalldetailstext"
+                android:paddingRight="10dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:textColor="#000000"
+                android:maxLines="1"
+
+                android:hint="House no./ Plot" />
+
+            <EditText
+                android:id="@+id/landmarkfield"
+                android:layout_width="350dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/input_one"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/houseplotfield"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/font_normal"
+                android:textSize="10dp"
+                android:textColor="#000000"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:maxLines="1"
+                android:hint="Landmark"
+                />
+
+            <EditText
+                android:id="@+id/pincodeField"
+                android:layout_width="350dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/input_one"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/landmarkfield"
+                android:fontFamily="@font/font_normal"
+                android:textSize="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="10dp"
+                android:textColor="#000000"
+                android:paddingBottom="10dp"
+                android:maxLines="1"
+                android:hint="Pincode" />
+            <EditText
+                android:id="@+id/nickname"
+                android:layout_width="350dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/input_one"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/pincodeField"
+                android:fontFamily="@font/font_normal"
+                android:textSize="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="10dp"
+                android:textColor="#000000"
+                android:paddingBottom="10dp"
+                android:maxLines="1"
+                android:hint="Known as ex. Granpa's Home" />
+
+            <Button
+                android:id="@+id/saveaddressToDatabaseBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/font_semibold"
+                android:textSize="13dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/btn_primary"
+                android:layout_below="@+id/nickname"
+                android:text="Save Address"
+                android:textColor="#fff" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

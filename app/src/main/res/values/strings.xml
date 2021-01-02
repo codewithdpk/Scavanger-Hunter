@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Scavenger Hunter</string>
+    <string name="google_map_key">AIzaSyCnarbJLmZMsjM2oDm8X3idaVQBgGWKXew</string>
 </resources>
