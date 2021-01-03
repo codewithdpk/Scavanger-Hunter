@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:layout_marginVertical="15dp"
+    android:padding="20dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_name_of_hunt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name of Hunt  (2.3 KM)"
+            android:textColor="#000"
+            android:fontFamily="@font/font_semibold"
+            android:layout_alignParentLeft="true"
+            android:textSize="15dp"
+            android:layout_toLeftOf="@+id/post_number_card"
+            android:layout_marginRight="20dp"
+            android:layout_centerVertical="true"
+
+            />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/post_number_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            app:cardBackgroundColor="@color/primary"
+            app:cardCornerRadius="3dp"
+            android:layout_centerVertical="true"
+            >
+            <TextView
+                android:id="@+id/tv_post_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3 Posts"
+                android:textColor="@color/white"
+                android:layout_marginHorizontal="5dp"
+                android:layout_marginVertical="2dp"
+
+                android:fontFamily="@font/font_normal"
+
+                android:textSize="15dp"
+                />
+
+        </androidx.cardview.widget.CardView>
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="5dp">
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="created by you"
+            android:textColor="@color/toast_color"
+            android:fontFamily="@font/font_normal"
+
+            android:textSize="13dp"
+            />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingVertical="10dp"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_location_marker_blue"
+                android:layout_gravity="center_horizontal"/>
+            <View
+                android:layout_width="2dp"
+                android:layout_height="50dp"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginVertical="5dp"
+                android:background="@drawable/dotted" />
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_location_marker_outline"
+                android:layout_gravity="center_horizontal"/>
+
+    </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+           >
+
+            <LinearLayout
+                android:id="@+id/starting_point_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="10dp"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/tv_starting_point_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Starting point"
+                    android:textColor="#000"
+                    android:fontFamily="@font/font_normal"
+
+                    />
+                <TextView
+                    android:id="@+id/tv_starting_point_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Starting point"
+                    android:textColor="#c4c4c4"
+                    android:layout_marginTop="5dp"
+                    android:textSize="12dp"
+                    android:fontFamily="@font/font_normal"
+
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_alignParentBottom="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="10dp"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/tv_ending_point_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Starting point"
+                    android:textColor="#000"
+                    android:fontFamily="@font/font_normal"
+
+                    />
+                <TextView
+                    android:id="@+id/tv_ending_point_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Starting point"
+                    android:textColor="#c4c4c4"
+                    android:layout_marginTop="5dp"
+                    android:textSize="12dp"
+                    android:fontFamily="@font/font_normal"/>
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+
+
+</LinearLayout>

@@ -9,5 +9,7 @@ package com.deepak.scavengerhunter.activities.APIs;
      public static final String LOGIN = BASE_URL+"/auth/login";
 
     public static final String CREATE_HUNT = BASE_URL+"/hunts/create";
+    public static final String GET_MY_HUNTS = BASE_URL+"/hunts/get-all";
+
 
 }
