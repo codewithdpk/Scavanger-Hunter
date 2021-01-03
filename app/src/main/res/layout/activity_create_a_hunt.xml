@@ -18,14 +18,31 @@
             android:layout_height="match_parent"
             tools:context="com.sample.sishin.maplocation.MapsActivity" />
 
-        <ImageView
-            android:id="@+id/ic_back"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_back_arrow"
-            android:layout_gravity="left|top"
-            android:layout_marginLeft="25dp"
-            android:layout_marginTop="25dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#FFF"
+            android:paddingHorizontal="25dp"
+            android:orientation="horizontal">
+            <ImageView
+                android:id="@+id/ic_back"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_back_arrow"
+                android:layout_gravity="center_vertical"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginHorizontal="20dp"
+                android:fontFamily="@font/font_normal"
+                android:text="Create A Post"
+                android:textSize="18dp"
+                android:textColor="#000"/>
+        </LinearLayout>
+
         <LinearLayout
             android:id="@+id/locationMarker"
             android:layout_width="wrap_content"

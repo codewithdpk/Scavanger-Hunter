@@ -21,10 +21,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.deepak.scavengerhunter.R;
-import com.deepak.scavengerhunter.activities.APIs.APIClient;
+
 import com.deepak.scavengerhunter.activities.APIs.EndPoints;
-import com.deepak.scavengerhunter.activities.APIs.ServiceInterfaces.RegistrationService;
-import com.deepak.scavengerhunter.activities.APIs.ServiceModals.UserRegistrationResponse;
+
 import com.deepak.scavengerhunter.activities.classes.Modals.RegisterUser;
 import com.deepak.scavengerhunter.activities.classes.Modals.User;
 import com.deepak.scavengerhunter.activities.classes.Utils;
@@ -34,10 +33,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
+
 
 public class RegistrationActivity extends AppCompatActivity {
 
@@ -59,8 +55,7 @@ public class RegistrationActivity extends AppCompatActivity {
     EndPoints endPoints;
     RelativeLayout rootLayout;
     ProgressDialog mProgressDialog;
-    Retrofit apiClient;
-    APIClient client;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,7 +121,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private void init(){
         utils = new Utils();
-        apiClient = client.getClient();
+
         //makeRequests = new MakeRequests();
         endPoints = new EndPoints();
         rootLayout = (RelativeLayout) findViewById(R.id.rootLayout_RegistrationActivity);
@@ -149,30 +144,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private void callApi(String name, String email, String password, String googleid, String facebookid,String image_url,String mode){
 
-        RegistrationService service = apiClient.create(RegistrationService.class);
-        // Calling '/api/users/2'
 
-
-
-        Call<User> callSync = service.UserRegistration(new RegisterUser(name,email,password,googleid,facebookid,image_url,mode))    ;
-
-        callSync.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                Log.d("RETROFIT:", response.toString());
-                mProgressDialog.dismiss();
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                //Handle failure
-                Log.e("RETROFIT:", t.toString());
-                mProgressDialog.dismiss();
-
-            }
-        });
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
         mProgressDialog.dismiss();
     }
 }

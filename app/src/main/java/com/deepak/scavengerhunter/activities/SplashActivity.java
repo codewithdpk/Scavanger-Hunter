@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.deepak.scavengerhunter.R;
+import com.deepak.scavengerhunter.activities.APIs.SharedPref;
+import com.deepak.scavengerhunter.activities.activites.HomeActivity;
 
 public class SplashActivity extends AppCompatActivity {
     private static boolean splashLoaded = false;
@@ -15,23 +17,19 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        if (!splashLoaded) {
-            setContentView(R.layout.activity_splash);
-            int secondsDelayed = 1;
-            new Handler().postDelayed(new Runnable() {
-                public void run() {
+        // Delay
+        int secondsDelayed = 1;
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                if(SharedPref.checkLoginStatus(SplashActivity.this)){
+                    startActivity(new Intent(SplashActivity.this, HomeActivity.class));
+                    finish();
+                }else{
                     startActivity(new Intent(SplashActivity.this, AuthActivity.class));
                     finish();
                 }
-            }, secondsDelayed * 500);
 
-            splashLoaded = true;
-        }
-        else {
-            Intent goToMainActivity = new Intent(SplashActivity.this, AuthActivity.class);
-            goToMainActivity.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            startActivity(goToMainActivity);
-            finish();
-        }
+            }
+        }, secondsDelayed * 1000);
     }
 }

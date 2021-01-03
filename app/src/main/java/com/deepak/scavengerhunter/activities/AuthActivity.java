@@ -2,6 +2,8 @@ package com.deepak.scavengerhunter.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,13 +13,30 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.deepak.scavengerhunter.R;
+import com.deepak.scavengerhunter.activities.APIs.AppController;
+import com.deepak.scavengerhunter.activities.APIs.EndPoints;
+import com.deepak.scavengerhunter.activities.classes.Utils;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class AuthActivity extends AppCompatActivity {
 
@@ -33,6 +52,9 @@ public class AuthActivity extends AppCompatActivity {
     EditText edt_password;
 
     public static int RC_SIGN_IN = 1111;
+    ProgressDialog pDialog;
+
+    public View rootView;
 
     @Override
     protected void onStart() {
@@ -49,7 +71,7 @@ public class AuthActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
-
+        rootView = getWindow().getDecorView().getRootView();
         // Initialization of variables
         init();
 
@@ -59,6 +81,40 @@ public class AuthActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(AuthActivity.this,RegistrationActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        // Signup with email and password
+
+        btn_signin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Grab values in variables
+
+                String email = edt_email.getText().toString();
+                String password = edt_password.getText().toString();
+                if(email.equals("") || password.equals("")){
+                    Utils.createToast(AuthActivity.this,rootView,"Please fill all values");
+                }else{
+
+                    pDialog.show();
+                    JSONObject params = new JSONObject();
+                    try {
+                        params.put("email",email);
+                        params.put("password",password);
+                        params.put("mode","email");
+                        hitApi(AuthActivity.this,EndPoints.LOGIN,email,password,rootView);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+
+
+
+
+
+            }
             }
         });
 
@@ -89,7 +145,16 @@ public class AuthActivity extends AppCompatActivity {
         txt_forgot_password = (TextView) findViewById(R.id.txt_forgot_password);
         edt_email = (EditText) findViewById(R.id.edt_email);
         edt_password = (EditText) findViewById(R.id.edt_password);
+        progressBar();
 
+
+    }
+
+    private void progressBar(){
+        pDialog = new ProgressDialog(AuthActivity.this); //Your Activity.this
+        pDialog.setMessage("Loading...");
+        pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        pDialog.setCancelable(false);
 
     }
 
@@ -123,5 +188,46 @@ public class AuthActivity extends AppCompatActivity {
             Log.w("GoogleSignIn", "signInResult:failed code=" + e.getStatusCode());
             //updateUI(null);
         }
+    }
+
+    private void hitApi(final Context context, String url, final String email, final String password, final View view) {
+
+        JSONObject jsonBody = new JSONObject();
+
+        try {
+            jsonBody.put("email", email);
+            jsonBody.put("password", password);
+            jsonBody.put("mode", "email");
+
+
+            JsonObjectRequest jsonOblect = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+
+                    Toast.makeText(getApplicationContext(), "Response:  " + response.toString(), Toast.LENGTH_SHORT).show();
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                    onBackPressed();
+
+                }
+            }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    final Map<String, String> headers = new HashMap<>();
+                    return headers;
+                }
+            };
+            AppController.getInstance().addToRequestQueue(jsonOblect);
+
+        } catch (JSONException jsonException) {
+            jsonException.printStackTrace();
+        }
+
+
+
+
     }
 }

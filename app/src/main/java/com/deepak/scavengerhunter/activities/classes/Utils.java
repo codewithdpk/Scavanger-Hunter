@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 
 public class Utils {
 
-    public void createToast(Context context, View view,String content){
+    public static void createToast(Context context, View view,String content){
         LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View layout = inflater.inflate(R.layout.custom_toast,
                 (ViewGroup) view.findViewById(R.id.toast_layout_root));

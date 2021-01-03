@@ -71,6 +71,10 @@ public class CreateAHuntActivity extends AppCompatActivity implements OnMapReady
     String knownName;
     FloatingActionButton getMyCurrentLocation;
 
+    EditText edt_name_of_hunt;
+    Button btn_cancel;
+    Button btn_create;
+
     /**
      * Receiver registered with this activity to get the response from FetchAddressIntentService.
      */
@@ -107,6 +111,19 @@ public class CreateAHuntActivity extends AppCompatActivity implements OnMapReady
         setContentView(R.layout.activity_create_a_hunt);
         mContext = this;
         init();
+
+        // Create the hunt
+        btn_create.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String huntName = edt_name_of_hunt.getText().toString();
+                String startingArea;
+                String startingCompleteAddress;
+                String startingLat;
+                String startingLong;
+
+            }
+        });
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -140,23 +157,23 @@ public class CreateAHuntActivity extends AppCompatActivity implements OnMapReady
             }
         });
 
-        saveaddressToDatabaseBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(houseplot.getText().toString().equals("") || landmark.getText().toString().equals("") || pincode.getText().toString().equals("") || nickname.getText().toString().equals("")) {
-                    Toast.makeText(mContext, "All fields required", Toast.LENGTH_SHORT).show();
-                }else{
-                    progressDialog=new ProgressDialog(CreateAHuntActivity.this);
-                    progressDialog.setMessage("Loading...");
-                    progressDialog.setCancelable(false);
-                    progressDialog.show();
-                    String completeAddress = houseplot.getText().toString() + "," + landmark.getText().toString() + "," + AddressString + "," + pincode.getText().toString();
-                    //saveAddressOnServer(nickname.getText().toString(), completeAddress);
-                    progressDialog.dismiss();
-
-                }
-            }
-        });
+//        saveaddressToDatabaseBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if(houseplot.getText().toString().equals("") || landmark.getText().toString().equals("") || pincode.getText().toString().equals("") || nickname.getText().toString().equals("")) {
+//                    Toast.makeText(mContext, "All fields required", Toast.LENGTH_SHORT).show();
+//                }else{
+//                    progressDialog=new ProgressDialog(CreateAHuntActivity.this);
+//                    progressDialog.setMessage("Loading...");
+//                    progressDialog.setCancelable(false);
+//                    progressDialog.show();
+//                    String completeAddress = houseplot.getText().toString() + "," + landmark.getText().toString() + "," + AddressString + "," + pincode.getText().toString();
+//                    //saveAddressOnServer(nickname.getText().toString(), completeAddress);
+//                    progressDialog.dismiss();
+//
+//                }
+//            }
+//        });
 //        mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
 
@@ -297,11 +314,15 @@ public class CreateAHuntActivity extends AppCompatActivity implements OnMapReady
         getMyCurrentLocation=findViewById(R.id.currentlocfab);
         bottom_sheet=findViewById(R.id.bottom_sheet);
         fetchedaddress=findViewById(R.id.locateaddress);
-        saveaddressToDatabaseBtn=findViewById(R.id.saveaddressToDatabaseBtn);
-        houseplot=findViewById(R.id.houseplotfield);
-        landmark=findViewById(R.id.landmarkfield);
-        pincode=findViewById(R.id.pincodeField);
-        nickname=findViewById(R.id.nickname);
+        edt_name_of_hunt = findViewById(R.id.edt_name_of_hunt);
+        btn_cancel = findViewById(R.id.btn_cancel_hunt);
+        btn_create = findViewById(R.id.btn_create_hunt);
+
+//        saveaddressToDatabaseBtn=findViewById(R.id.saveaddressToDatabaseBtn);
+//        houseplot=findViewById(R.id.houseplotfield);
+//        landmark=findViewById(R.id.landmarkfield);
+//        pincode=findViewById(R.id.pincodeField);
+//        nickname=findViewById(R.id.nickname);
         backbtn = findViewById(R.id.ic_back);
     }
 
@@ -573,6 +594,7 @@ public class CreateAHuntActivity extends AppCompatActivity implements OnMapReady
                 // mLocationText.setText(mAreaOutput+ "");
 
                 fetchedaddress.setText(knownName);
+                edt_name_of_hunt.setText(knownName);
             //mLocationText.setText(mAreaOutput);
         } catch (Exception e) {
             e.printStackTrace();
@@ -682,13 +704,14 @@ public class CreateAHuntActivity extends AppCompatActivity implements OnMapReady
             list = geocoder.getFromLocation(latitude, longitude, 1);
             if (list != null && list.size() > 0) {
                 address = list.get(0).getAddressLine(0);
-                String city = list.get(0).getLocality();
+                String city = list.get(0).getFeatureName();
                 String state = list.get(0).getAdminArea();
                 String country = list.get(0).getCountryName();
                 String postalCode = list.get(0).getPostalCode();
                 knownName = list.get(0).getFeatureName();
-                AddressString=address;
-                fetchedaddress.setText(address);
+                AddressString=city;
+                fetchedaddress.setText(city);
+                edt_name_of_hunt.setText(city);
             }
         } catch (IOException e) {
             e.printStackTrace();
