@@ -29,7 +29,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.deepak.scavengerhunter.R;
+import com.deepak.scavengerhunter.activities.APIs.AppController;
+import com.deepak.scavengerhunter.activities.APIs.EndPoints;
+import com.deepak.scavengerhunter.activities.APIs.SharedPref;
+import com.deepak.scavengerhunter.activities.AuthActivity;
+import com.deepak.scavengerhunter.activities.classes.Utils;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -50,9 +60,14 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class CreateAHuntActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
     private GoogleMap mMap;
@@ -103,6 +118,9 @@ public class CreateAHuntActivity extends AppCompatActivity implements OnMapReady
     private LocationManager AppUtils;
     private Button saveaddressToDatabaseBtn;
     private ProgressDialog progressDialog;
+    LatLng currentLocation;
+
+    View rootView;
 
 
     @Override
@@ -110,6 +128,7 @@ public class CreateAHuntActivity extends AppCompatActivity implements OnMapReady
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_a_hunt);
         mContext = this;
+        rootView = getWindow().getDecorView().getRootView();
         init();
 
         // Create the hunt
@@ -117,10 +136,24 @@ public class CreateAHuntActivity extends AppCompatActivity implements OnMapReady
             @Override
             public void onClick(View v) {
                 String huntName = edt_name_of_hunt.getText().toString();
-                String startingArea;
-                String startingCompleteAddress;
-                String startingLat;
-                String startingLong;
+                JSONObject params = new JSONObject();
+
+                try {
+                    progressDialog.show();
+                    List<Address> address = getAddressForApi(currentLocation.latitude,currentLocation.longitude);
+                    params.put("createdBy",SharedPref.getUserId(CreateAHuntActivity.this)  );
+                    params.put("huntName",huntName);
+                    params.put("startingAreaName",address.get(0).getAdminArea());
+                    params.put("completeStartingAddress",address.get(0).getAddressLine(0));
+                    params.put("startingLat",currentLocation.latitude);
+                    params.put("startingLong",currentLocation.longitude);
+                    hitApi(CreateAHuntActivity.this,params,rootView);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    progressDialog.dismiss();
+                }
+
+
 
             }
         });
@@ -145,6 +178,7 @@ public class CreateAHuntActivity extends AppCompatActivity implements OnMapReady
                 Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                         mGoogleApiClient);
                 if (mLastLocation != null) {
+                    currentLocation = new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
                     changeMap(mLastLocation);
                 }
             }
@@ -157,34 +191,14 @@ public class CreateAHuntActivity extends AppCompatActivity implements OnMapReady
             }
         });
 
-//        saveaddressToDatabaseBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if(houseplot.getText().toString().equals("") || landmark.getText().toString().equals("") || pincode.getText().toString().equals("") || nickname.getText().toString().equals("")) {
-//                    Toast.makeText(mContext, "All fields required", Toast.LENGTH_SHORT).show();
-//                }else{
-//                    progressDialog=new ProgressDialog(CreateAHuntActivity.this);
-//                    progressDialog.setMessage("Loading...");
-//                    progressDialog.setCancelable(false);
-//                    progressDialog.show();
-//                    String completeAddress = houseplot.getText().toString() + "," + landmark.getText().toString() + "," + AddressString + "," + pincode.getText().toString();
-//                    //saveAddressOnServer(nickname.getText().toString(), completeAddress);
-//                    progressDialog.dismiss();
-//
-//                }
-//            }
-//        });
-//        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+
 
 
         sheetBehavior=BottomSheetBehavior.from(bottom_sheet);
 
 
         AppUtils = (LocationManager)    this.getSystemService(Context.LOCATION_SERVICE);
-//        setSupportActionBar(mToolbar);
-//        getSupportActionBar().setDisplayShowHomeEnabled(true);
-//
-//        getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
+
 
 
 
@@ -255,58 +269,7 @@ public class CreateAHuntActivity extends AppCompatActivity implements OnMapReady
 
 
     private void saveAddressOnServer(String nickname, String completeAddress) {
-        //String uid = AppPreferences.loadPreferences(SelectDeliveryAddress.this, "USER_ID");
 
-//        StringRequest stringRequest=new StringRequest(Request.Method.POST, EndApi.SAVE_ADDRESS,
-//                new Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String response) {
-//
-//                        Log.e("response",response);
-//                        progressDialog.dismiss();
-//                        int size=savedAddressLists.size();
-//
-//                        savedAddressLists.add(new SavedAddressList(nickname,completeAddress));
-//                        AllAddressActivity.fetchAddressAdapter.notifyDataSetChanged();
-//                        AllAddressActivity.fetchAddressAdapter.notifyItemInserted(size);
-//                        noaddressfoundlayout.setVisibility(View.GONE);
-//                        //fetchAddressAdapter.notifyAll();
-//                        finish();
-//
-//
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Log.e("responce", error.toString() );
-//                new android.app.AlertDialog.Builder(getApplicationContext())
-//                        .setTitle("Connection failed!")
-//                        .setCancelable(false)
-//                        .setMessage("Please check your internet connection or restart the App!")
-//                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//
-//                            }
-//                        }).show();
-//                //Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_LONG).show();
-//            }
-//        }
-//        ){
-//            @Override
-//            protected Map<String, String> getParams() throws AuthFailureError {
-//                Map<String,String> params=new HashMap<String,String>();
-//                params.put("UID",uid);
-//                params.put("NICKNAME",nickname);
-//                params.put("ADDRESS",completeAddress);
-//
-//
-//
-//                return params;
-//            }
-//        };
-//        stringRequest.setShouldCache(false);
-//        MySingleton.getInstance(getApplicationContext()).addTorequestque(stringRequest);
     }
 
     private void init(){
@@ -317,13 +280,14 @@ public class CreateAHuntActivity extends AppCompatActivity implements OnMapReady
         edt_name_of_hunt = findViewById(R.id.edt_name_of_hunt);
         btn_cancel = findViewById(R.id.btn_cancel_hunt);
         btn_create = findViewById(R.id.btn_create_hunt);
-
-//        saveaddressToDatabaseBtn=findViewById(R.id.saveaddressToDatabaseBtn);
-//        houseplot=findViewById(R.id.houseplotfield);
-//        landmark=findViewById(R.id.landmarkfield);
-//        pincode=findViewById(R.id.pincodeField);
-//        nickname=findViewById(R.id.nickname);
         backbtn = findViewById(R.id.ic_back);
+        progressBar();
+    }
+
+    private void progressBar(){
+        progressDialog=new ProgressDialog(CreateAHuntActivity.this);
+        progressDialog.setMessage("Loading...");
+        progressDialog.setCancelable(false);
     }
 
 
@@ -361,6 +325,7 @@ public class CreateAHuntActivity extends AppCompatActivity implements OnMapReady
                     mLocation.setLongitude(mCenterLatLong.longitude);
 
                     //startIntentService(mLocation);
+                    currentLocation = mCenterLatLong;
                     getAddress( mCenterLatLong.latitude, mCenterLatLong.longitude);
                     //mLocationMarkerText.setText("Lat : " + mCenterLatLong.latitude + "," + "Long : " + mCenterLatLong.longitude);
 
@@ -717,9 +682,51 @@ public class CreateAHuntActivity extends AppCompatActivity implements OnMapReady
             e.printStackTrace();
         }
     }
-//    @Override
-//    public void onBackPressed() {
-//        super.onBackPressed();
-//        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
-//    }
+
+    private List<Address> getAddressForApi(double latitude, double longitude) {
+        String address = "";
+        Geocoder geocoder = new Geocoder(CreateAHuntActivity.this, Locale.getDefault());
+        try {
+            list = geocoder.getFromLocation(latitude, longitude, 1);
+            return list;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    private void hitApi(final Context context, JSONObject params, final View view) {
+        final boolean[] loggedin = {false};
+
+
+        JsonObjectRequest jsonOblect = new JsonObjectRequest(Request.Method.POST, EndPoints.CREATE_HUNT, params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("RESPONSE:",response.toString());
+                Utils.createToast(context,rootView,response.toString());
+                progressDialog.dismiss();
+
+
+
+                //Toast.makeText(getApplicationContext(), "Response:  " + response.toString(), Toast.LENGTH_SHORT).show();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("VOLLEY",error.toString());
+                Utils.createToast(context,rootView,error.toString());
+
+
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                final Map<String, String> headers = new HashMap<>();
+                return headers;
+            }
+        };
+        AppController.getInstance().addToRequestQueue(jsonOblect);
+
+
+    }
 }

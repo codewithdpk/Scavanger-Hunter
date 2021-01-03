@@ -24,6 +24,8 @@ import com.android.volley.toolbox.Volley;
 import com.deepak.scavengerhunter.R;
 import com.deepak.scavengerhunter.activities.APIs.AppController;
 import com.deepak.scavengerhunter.activities.APIs.EndPoints;
+import com.deepak.scavengerhunter.activities.APIs.SharedPref;
+import com.deepak.scavengerhunter.activities.activites.HomeActivity;
 import com.deepak.scavengerhunter.activities.classes.Utils;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -191,7 +193,7 @@ public class AuthActivity extends AppCompatActivity {
     }
 
     private void hitApi(final Context context, String url, final String email, final String password, final View view) {
-
+        final boolean[] loggedin = {false};
         JSONObject jsonBody = new JSONObject();
 
         try {
@@ -203,14 +205,43 @@ public class AuthActivity extends AppCompatActivity {
             JsonObjectRequest jsonOblect = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
+                    try {
+                        Log.d("RESPONSE:",response.toString());
+                        if(response.getString("status").equals("OK")){
+                            pDialog.dismiss();
+                            Utils.createToast(context,rootView,"Login Success.");
+                            //Utils.createToast(context,rootView,response.getJSONObject("userInfo").toString());
 
-                    Toast.makeText(getApplicationContext(), "Response:  " + response.toString(), Toast.LENGTH_SHORT).show();
+                            SharedPref.saveUserInfo(context,response.getJSONObject("userInfo").toString());
+
+                            startActivity(new Intent(AuthActivity.this,HomeActivity.class));
+                            finish();
+
+
+                        }else if(response.getString("status").equals("user_not_found")){
+                            pDialog.dismiss();
+                            Utils.createToast(context,rootView,response.getString("message"));
+
+                        }else{
+                            pDialog.dismiss();
+                            Utils.createToast(context,rootView,"Something went wrong.");
+
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Log.d("VOLLEY",e.toString());
+
+                        pDialog.dismiss();
+                    }
+
+                    //Toast.makeText(getApplicationContext(), "Response:  " + response.toString(), Toast.LENGTH_SHORT).show();
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
+                    Log.d("VOLLEY",error.toString());
+                    Utils.createToast(context,rootView,error.toString());
 
-                    onBackPressed();
 
                 }
             }) {
@@ -224,7 +255,12 @@ public class AuthActivity extends AppCompatActivity {
 
         } catch (JSONException jsonException) {
             jsonException.printStackTrace();
+            Log.d("VOLLEY",jsonException.toString());
+
+            pDialog.dismiss();
         }
+
+
 
 
 

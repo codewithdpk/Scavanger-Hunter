@@ -10,7 +10,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class SharedPref {
 
-    public static String DB_NAME = "scavenger";
+    public static String DB_NAME = "pokerdb";
 
 
 
@@ -25,6 +25,7 @@ public class SharedPref {
                 = sharedPreferences.edit();
 
         myEdit.putString("userInfo",userInfo);
+
         myEdit.commit();
         myEdit.apply();
 
@@ -87,5 +88,21 @@ public class SharedPref {
             return true;
         }
 
+    }
+
+    public static String getUserId(Context context){
+        SharedPreferences sh
+                = context.getSharedPreferences(DB_NAME,
+                MODE_PRIVATE);
+
+        JSONObject Json;
+        String id = null;
+        try {
+            Json = new JSONObject(sh.getString("userInfo", ""));
+            id = Json.getString("user_id");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return id;
     }
 }
