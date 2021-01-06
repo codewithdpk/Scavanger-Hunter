@@ -7,7 +7,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".activities.APIs.AppController"
+
+        android:name=".APIs.AppController"
         android:allowBackup="true"
         android:icon="@drawable/app_logo"
         android:label="@string/app_name"
@@ -15,27 +16,27 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.activites.ViewSingleHuntActivity"/>
-        <activity android:name=".activities.activites.MyHuntsActivity">
+        <activity android:name=".activites.ViewSingleHuntActivity"/>
+        <activity android:name=".activites.MyHuntsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.activites.CreateAHuntActivity"
+        <activity android:name=".activites.CreateAHuntActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
         <activity
-            android:name=".activities.activites.HomeActivity"
+            android:name=".activites.HomeActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name=".activities.RegistrationActivity"
+            android:name=".RegistrationActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name=".activities.AuthActivity"
+            android:name=".AuthActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name=".activities.SplashActivity"
+            android:name=".SplashActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
 
         </activity>
