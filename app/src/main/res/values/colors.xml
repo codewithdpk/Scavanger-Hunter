@@ -6,5 +6,9 @@
     <color name="hint_color">#848484</color>
     <color name="toast_color">#3a3b3a</color>
     <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="activity_background">#e6e6e6</color>
+    <color name="green">#28a745</color>
+    <color name="danger">#dc3545</color>
 
 </resources>

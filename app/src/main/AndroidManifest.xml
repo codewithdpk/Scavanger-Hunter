@@ -15,11 +15,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.activites.MyHuntsActivity"></activity>
-        <activity android:name=".activities.activites.CreateAHuntActivity" />
+        <activity android:name=".activities.activites.ViewSingleHuntActivity"/>
+        <activity android:name=".activities.activites.MyHuntsActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".activities.activites.CreateAHuntActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
         <activity
             android:name=".activities.activites.HomeActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".activities.RegistrationActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
@@ -29,11 +37,7 @@
         <activity
             android:name=".activities.SplashActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <meta-data

@@ -93,16 +93,15 @@
         app:cardCornerRadius="5dp"
         app:cardBackgroundColor="#c4c4c4"
         >
-        <EditText
+        <AutoCompleteTextView
+            android:id="@+id/edt_search_hunts"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-
+            android:layout_height="wrap_content"
             android:background="@drawable/input_two"
-
             android:fontFamily="@font/font_normal"
             android:padding="15dp"
+            android:completionThreshold="1"
             android:drawableRight="@drawable/ic_search"
-
             android:textColor="@color/hint_color"
             android:textColorHint="@color/hint_color"
             android:hint="Search Places"
