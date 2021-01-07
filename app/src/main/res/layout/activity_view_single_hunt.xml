@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/activity_background"
     android:orientation="vertical"
-    tools:context=".activities.activites.ViewSingleHuntActivity">
+    tools:context=".activites.ViewSingleHuntActivity">
 
 
     <LinearLayout
@@ -233,9 +233,16 @@
             android:textSize="18dp"
             android:textColor="#000"/>
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_hunts_posts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:layout_marginVertical="15dp">
             <TextView
                 android:layout_width="wrap_content"
@@ -254,6 +261,7 @@
             android:layout_gravity="center_vertical"
             android:fontFamily="@font/font_normal"
             android:text="Add New Post +"
+            android:layout_marginVertical="20dp"
             android:textSize="15dp"
             android:textColor="@color/primary"/>
     </LinearLayout>

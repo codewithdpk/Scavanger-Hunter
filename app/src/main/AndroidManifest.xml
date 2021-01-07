@@ -7,7 +7,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-
         android:name=".APIs.AppController"
         android:allowBackup="true"
         android:icon="@drawable/app_logo"
@@ -16,7 +15,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activites.ViewSingleHuntActivity"/>
+        <activity android:name=".activites.CreateAPostActivity"></activity>
+        <activity android:name=".activites.ViewSingleHuntActivity" />
         <activity android:name=".activites.MyHuntsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,8 +24,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activites.CreateAHuntActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity
+            android:name=".activites.CreateAHuntActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".activites.HomeActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
@@ -37,9 +38,7 @@
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".SplashActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
-
-        </activity>
+            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
