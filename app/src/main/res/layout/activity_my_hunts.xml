@@ -39,6 +39,19 @@
         android:layout_below="@+id/header_layout"
         android:background="@drawable/border_shadow"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginHorizontal="20dp"
+        android:fontFamily="@font/font_normal"
+        android:text="My Hunts"
+        android:textSize="18dp"
+        android:layout_marginTop="20dp"
+        android:textColor="#000"/>
+
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_my_hunts"
         android:layout_width="match_parent"

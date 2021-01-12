@@ -38,7 +38,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginHorizontal="20dp"
                 android:fontFamily="@font/font_normal"
-                android:text="Create A Post"
+                android:text="Create A Hunt "
                 android:textSize="18dp"
                 android:textColor="#000"/>
         </LinearLayout>
