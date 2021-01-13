@@ -23,6 +23,7 @@
             />
 
         <TextView
+            android:id="@+id/tv_hunt_name_top"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/font_semibold"
@@ -78,6 +79,7 @@
                 />
 
             <TextView
+                android:id="@+id/tv_hunt_name_bottom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/font_semibold"
@@ -106,6 +108,7 @@
                 android:text="Created by "/>
 
             <TextView
+                android:id="@+id/tv_owner_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/font_semibold"
@@ -140,6 +143,7 @@
             android:paddingHorizontal="20dp">
 
             <TextView
+                android:id="@+id/tv_information_of_hunt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/font_normal"
@@ -156,6 +160,7 @@
             android:paddingHorizontal="20dp">
 
             <TextView
+                android:id="@+id/tv_post_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/font_semibold"

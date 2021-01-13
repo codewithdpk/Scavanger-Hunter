@@ -8,6 +8,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -38,6 +39,13 @@ public class StartHuntActivity extends AppCompatActivity {
     ArrayList<PostsModal> postsList;
     ProgressDialog progressDialog;
 
+    TextView tv_hunt_name_top;
+    TextView tv_hunt_name_bottom;
+    TextView tv_owner_name;
+    TextView tv_information_of_hunt;
+    TextView tv_post_count;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,29 +53,44 @@ public class StartHuntActivity extends AppCompatActivity {
         init();
         Intent intent = getIntent();
         HuntId = intent.getStringExtra("hunt_id");
+        Log.d("HUNT_ID:",HuntId);
+        getHuntInformation(HuntId);
     }
 
     private void init(){
         postsList = new ArrayList<>();
         rv_posts = findViewById(R.id.posts_of_hunts);
+        tv_hunt_name_top = findViewById(R.id.tv_hunt_name_top);
+        tv_hunt_name_bottom = findViewById(R.id.tv_hunt_name_bottom);
+        tv_owner_name = findViewById(R.id.tv_owner_name);
+        tv_information_of_hunt = findViewById(R.id.tv_information_of_hunt);
+        tv_post_count = findViewById(R.id.tv_post_count);
         progressBar();
     }
 
-    private void getHuntInformation() {
+    private void getHuntInformation(String id) {
+        progressDialog.show();
         JSONObject params = new JSONObject();
         try {
-            params.put("id",HuntId);
+            params.put("id",id);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        JsonObjectRequest jsonOblect = new JsonObjectRequest(Request.Method.POST, EndPoints.GET_FILTERS_HUNTS, params, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonOblect = new JsonObjectRequest(Request.Method.POST, EndPoints.GET_HUNT_BY_ID, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("RESPONSE:", response.toString());
                 try {
                     if(response.getString("status").equals("OK")){
+                        JSONObject ownerDetails = response.getJSONObject("owner");
+                        JSONObject huntDetails = response.getJSONObject("hunt");
                         JSONArray posts = response.getJSONArray("posts");
+                        tv_hunt_name_top.setText(huntDetails.getString("name"));
+                        tv_hunt_name_bottom.setText(huntDetails.getString("name"));
+                        tv_owner_name.setText(ownerDetails.getString("name"));
+                        //tv_information_of_hunt.setText(huntDetails.getString("information"));
+                        tv_post_count.setText(posts.length()+" POSTS");
                         for(int i=0;i<posts.length();i++){
                             JSONObject post = posts.getJSONObject(i);
                             postsList.add(new PostsModal(post.getString("post_id"),
@@ -87,6 +110,8 @@ public class StartHuntActivity extends AppCompatActivity {
                                     ));
                         }
 
+
+
                         PostsBlueAdapter adapter = new PostsBlueAdapter(StartHuntActivity.this,postsList);
                         LinearLayoutManager layoutManager = new LinearLayoutManager(StartHuntActivity.this, LinearLayoutManager.VERTICAL, false);
                         rv_posts.setLayoutManager(layoutManager);
@@ -95,6 +120,7 @@ public class StartHuntActivity extends AppCompatActivity {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    progressDialog.dismiss();
                 }
 
             }
@@ -104,7 +130,7 @@ public class StartHuntActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 Log.d("VOLLEY", error.toString());
                 Toast.makeText(StartHuntActivity.this, error.toString(), Toast.LENGTH_LONG).show();
-
+                progressDialog.dismiss();
 
             }
         }) {

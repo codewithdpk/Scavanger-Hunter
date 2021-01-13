@@ -16,8 +16,8 @@ import java.util.ArrayList;
 
 public class PostsBlueAdapter  extends RecyclerView.Adapter<PostsBlueAdapter.ViewHolder> {
 
-    private ArrayList<PostsModal> postsList;
-    private LayoutInflater mInflater;
+    private final ArrayList<PostsModal> postsList;
+    private final LayoutInflater mInflater;
     public Context context;
 
 

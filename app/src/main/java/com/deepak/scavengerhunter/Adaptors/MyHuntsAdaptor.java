@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.deepak.scavengerhunter.Modals.HuntModal;
 import com.deepak.scavengerhunter.R;
+import com.deepak.scavengerhunter.activites.StartHuntActivity;
 import com.deepak.scavengerhunter.activites.ViewSingleHuntActivity;
 
 
@@ -62,8 +63,7 @@ public class MyHuntsAdaptor extends RecyclerView.Adapter<MyHuntsAdaptor.ViewHold
         holder.card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Intent intent = new Intent(context, ViewSingleHuntActivity.class);
+                Intent intent = new Intent(context, StartHuntActivity.class);
                 intent.putExtra("hunt_id",huntModal.getHunt_id());
                 context.startActivity(intent);
             }
