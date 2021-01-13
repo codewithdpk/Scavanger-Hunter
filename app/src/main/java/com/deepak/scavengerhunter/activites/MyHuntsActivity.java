@@ -1,18 +1,16 @@
-package com.deepak.scavengerhunter.Fragments;
+package com.deepak.scavengerhunter.activites;
+
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import android.widget.LinearLayout;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -25,8 +23,8 @@ import com.deepak.scavengerhunter.APIs.SharedPref;
 import com.deepak.scavengerhunter.Adaptors.MyHuntsAdaptor;
 import com.deepak.scavengerhunter.Modals.HuntModal;
 import com.deepak.scavengerhunter.R;
-import com.deepak.scavengerhunter.activites.MyHuntsActivity;
 import com.deepak.scavengerhunter.classes.Utils;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,40 +32,36 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class MyHuntsFragment extends Fragment {
+public class MyHuntsActivity extends AppCompatActivity {
 
     RecyclerView rv_myhunts;
     public ArrayList<HuntModal> my_hunts;
     View rootView;
+
     ProgressDialog progressDialog;
 
-    @Nullable
+
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_my_hunts, container, false);
-        init(rootView);
-        this.rootView = rootView;
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_my_hunts);
+        rootView = getWindow().getDecorView().getRootView();
+        init();
 
         JSONObject params = new JSONObject();
         try {
-            params.put("id", SharedPref.getUserId(getContext()));
+            params.put("id", SharedPref.getUserId(MyHuntsActivity.this));
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        getAllHunts(getContext(),params,rootView);
-        return rootView;
+        getAllHunts(MyHuntsActivity.this,params,rootView);
     }
 
-
-
-
-
-
-    private void init(View view){
-
-        rv_myhunts = view.findViewById(R.id.rv_my_hunts);
+    private void init(){
+        rv_myhunts = findViewById(R.id.rv_my_hunts);
         my_hunts = new ArrayList<>();
         progressBar();
     }
@@ -75,7 +69,7 @@ public class MyHuntsFragment extends Fragment {
 
 
     private void getAllHunts(final Context context, JSONObject params, final View view) {
-        progressDialog.show();
+       progressDialog.show();
 
 
         JsonObjectRequest jsonOblect = new JsonObjectRequest(Request.Method.POST, EndPoints.GET_MY_HUNTS, params, new Response.Listener<JSONObject>() {
@@ -90,8 +84,8 @@ public class MyHuntsFragment extends Fragment {
                             JSONObject obj = hunts.getJSONObject(i);
                             my_hunts.add(new HuntModal(obj.getString("hunt_id"),obj.getString("createdBy"),obj.getString("name"),obj.getString("startingArea"),obj.getString("completeStartingAddress"),obj.getString("startingLong"),obj.getString("startingLat"),obj.getString("endingArea"),obj.getString("endingStartingAddress"),obj.getString("endingLong"),obj.getString("endingLat"),obj.getString("created"),obj.getString("updated"),obj.getString("status")));
                         }
-                        MyHuntsAdaptor adapter = new MyHuntsAdaptor(getContext(),my_hunts);
-                        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+                        MyHuntsAdaptor adapter = new MyHuntsAdaptor(MyHuntsActivity.this,my_hunts);
+                        LinearLayoutManager layoutManager = new LinearLayoutManager(MyHuntsActivity.this, LinearLayoutManager.VERTICAL, false);
                         rv_myhunts.setLayoutManager(layoutManager);
                         rv_myhunts.setAdapter(adapter);
                         progressDialog.dismiss();
@@ -129,7 +123,7 @@ public class MyHuntsFragment extends Fragment {
     }
 
     private void progressBar(){
-        progressDialog=new ProgressDialog(getContext());
+        progressDialog=new ProgressDialog(MyHuntsActivity.this);
         progressDialog.setMessage("Loading...");
         progressDialog.setCancelable(false);
     }
