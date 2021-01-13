@@ -15,12 +15,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activites.CreateAPostActivity"></activity>
-        <activity android:name=".activites.HomeBaseActivity"></activity>
+        <activity android:name=".activites.SearchHuntActivity"></activity>
+        <activity android:name=".activites.CreateAPostActivity" />
+        <activity android:name=".activites.HomeBaseActivity" />
         <activity android:name=".activites.ViewSingleHuntActivity" />
-        <activity android:name=".activites.MyHuntsActivity">
-
-        </activity>
+        <activity android:name=".activites.MyHuntsActivity"></activity>
         <activity
             android:name=".activites.CreateAHuntActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />

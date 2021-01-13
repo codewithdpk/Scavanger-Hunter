@@ -87,8 +87,10 @@ public class MyHuntsFragment extends Fragment {
                     if(response.getString("status").equals("OK")){
                         JSONArray hunts = response.getJSONArray("hunts");
                         for( int i=0; i< hunts.length(); i++){
-                            JSONObject obj = hunts.getJSONObject(i);
-                            my_hunts.add(new HuntModal(obj.getString("hunt_id"),obj.getString("createdBy"),obj.getString("name"),obj.getString("startingArea"),obj.getString("completeStartingAddress"),obj.getString("startingLong"),obj.getString("startingLat"),obj.getString("endingArea"),obj.getString("endingStartingAddress"),obj.getString("endingLong"),obj.getString("endingLat"),obj.getString("created"),obj.getString("updated"),obj.getString("status")));
+                            JSONObject hunt = hunts.getJSONObject(i);
+                            JSONObject obj = hunt.getJSONObject("hunt");
+                            JSONArray posts = hunt.getJSONArray("posts");
+                            my_hunts.add(new HuntModal(obj.getString("hunt_id"),obj.getString("createdBy"),obj.getString("name"),obj.getString("startingArea"),obj.getString("completeStartingAddress"),obj.getString("startingLong"),obj.getString("startingLat"),obj.getString("endingArea"),obj.getString("endingStartingAddress"),obj.getString("endingLong"),obj.getString("endingLat"),obj.getString("created"),obj.getString("updated"),obj.getString("status"),posts));
                         }
                         MyHuntsAdaptor adapter = new MyHuntsAdaptor(getContext(),my_hunts);
                         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);

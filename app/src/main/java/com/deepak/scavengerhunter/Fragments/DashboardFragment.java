@@ -26,6 +26,7 @@ import com.deepak.scavengerhunter.Modals.People;
 import com.deepak.scavengerhunter.R;
 import com.deepak.scavengerhunter.activites.CreateAHuntActivity;
 import com.deepak.scavengerhunter.activites.HomeActivity;
+import com.deepak.scavengerhunter.activites.SearchHuntActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -110,6 +111,15 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getContext(), CreateAHuntActivity.class));
+
+            }
+        });
+
+
+        edt_search_hunts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(), SearchHuntActivity.class));
 
             }
         });

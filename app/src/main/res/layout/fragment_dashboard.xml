@@ -102,6 +102,8 @@
                         android:background="@drawable/input_two"
                         android:fontFamily="@font/font_normal"
                         android:padding="15dp"
+                        android:focusableInTouchMode="false"
+                        android:editable="false"
                         android:drawableRight="@drawable/ic_search"
                         android:textColor="@color/hint_color"
                         android:textColorHint="@color/hint_color"

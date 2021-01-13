@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#FFF"
     android:orientation="vertical"
-    tools:context=".activities.activites.MyHuntsActivity">
+    tools:context=".activites.MyHuntsActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

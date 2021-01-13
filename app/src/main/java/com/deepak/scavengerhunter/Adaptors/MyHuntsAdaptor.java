@@ -49,7 +49,7 @@ public class MyHuntsAdaptor extends RecyclerView.Adapter<MyHuntsAdaptor.ViewHold
     public void onBindViewHolder(ViewHolder holder, int position) {
         final HuntModal huntModal = hunts.get(position);
         holder.tv_huntname.setText(huntModal.getName());
-        holder.tv_posts.setText("0 Posts");
+        holder.tv_posts.setText(huntModal.getPosts().length()+" Posts");
         holder.tv_startingPointName.setText(huntModal.getStartingArea());
         holder.tv_startingPointAddress.setText(huntModal.getCompleteStartingAddress());
         if(huntModal.getEndingArea().equals("none")){

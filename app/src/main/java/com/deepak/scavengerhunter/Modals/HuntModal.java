@@ -1,5 +1,7 @@
 package com.deepak.scavengerhunter.Modals;
 
+import org.json.JSONArray;
+
 public class HuntModal {
 
     String hunt_id;
@@ -16,8 +18,17 @@ public class HuntModal {
     String created;
     String updated;
     String status;
+    JSONArray posts;
 
-    public HuntModal(String hunt_id, String createdBy, String name, String startingArea, String completeStartingAddress, String startingLong, String startingLat, String endingArea, String endingStartingAddress, String endingLong, String endingLat, String created, String updated, String status) {
+    public JSONArray getPosts() {
+        return posts;
+    }
+
+    public void setPosts(JSONArray posts) {
+        this.posts = posts;
+    }
+
+    public HuntModal(String hunt_id, String createdBy, String name, String startingArea, String completeStartingAddress, String startingLong, String startingLat, String endingArea, String endingStartingAddress, String endingLong, String endingLat, String created, String updated, String status, JSONArray posts) {
         this.hunt_id = hunt_id;
         this.createdBy = createdBy;
         this.name = name;
@@ -32,6 +43,7 @@ public class HuntModal {
         this.created = created;
         this.updated = updated;
         this.status = status;
+        this.posts = posts;
     }
 
     public String getHunt_id() {
