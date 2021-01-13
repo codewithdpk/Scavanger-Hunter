@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context=".activites.StartHuntActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:background="@color/white"
+        android:paddingHorizontal="20dp"
+        android:layout_height="60dp">
+
+        <ImageView
+            android:id="@+id/ic_marker_pin"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/marker_pin"
+            android:layout_centerVertical="true"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/font_semibold"
+            android:layout_toRightOf="@id/ic_marker_pin"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/black"
+            android:textSize="18dp"
+            android:text="Hunt Name"/>
+
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_close"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#c4c4c4"/>
+
+    <fragment xmlns:map="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        tools:context=".activites.StartHuntActivity" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:background="@color/white"
+            android:paddingHorizontal="20dp"
+            android:layout_height="60dp">
+
+            <ImageView
+                android:id="@+id/ic_marker_pin2"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/marker_pin"
+                android:layout_centerVertical="true"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/font_semibold"
+                android:layout_toRightOf="@id/ic_marker_pin2"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/black"
+                android:textSize="18dp"
+                android:text="Hunt Name"/>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:background="@color/white"
+            android:paddingHorizontal="20dp"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/font_normal"
+                android:textColor="#c4c4c4"
+                android:textSize="14dp"
+                android:text="Created by "/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/font_semibold"
+                android:textColor="@color/primary"
+                android:textSize="16dp"
+                android:layout_marginLeft="5dp"
+                android:text="User1"/>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
+            android:paddingHorizontal="20dp">
+            <com.iarcuschin.simpleratingbar.SimpleRatingBar
+                android:layout_width="80dp"
+                android:layout_height="25dp"
+                android:layout_marginLeft="-5dp"
+                app:srb_borderColor="#FFD700"
+                app:srb_fillColor="#FFD700"
+                app:srb_numberOfStars="5"
+                app:srb_rating="3"
+                app:srb_starSize="10dp"
+                app:srb_stepSize="0.5" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
+            android:paddingHorizontal="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/font_normal"
+                android:textSize="16dp"
+                android:textColor="#c4c4c4"
+                android:text="Sed porttitor lectus nibh. Vivamus suscipit tortor eget felis porttitor volutpat."/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
+            android:paddingHorizontal="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/font_semibold"
+                android:textSize="16dp"
+                android:textColor="@color/toast_color_two"
+                android:text="3 POSTS"/>
+
+        </RelativeLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/posts_of_hunts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textAllCaps="false"
+            android:layout_margin="20dp"
+            android:text="Navigate to Starting Point"
+            android:fontFamily="@font/font_normal"
+            android:textSize="16dp"
+            android:background="@drawable/btn_primary"/>
+
+
+    </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

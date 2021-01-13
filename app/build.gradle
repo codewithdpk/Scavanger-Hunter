@@ -35,6 +35,7 @@ dependencies {
     annotationProcessor 'android.arch.persistence.room:compiler:1.0.0-beta2'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-location:17.1.0'
+    implementation 'com.iarcuschin:simpleratingbar:0.1.5'
 
     implementation 'com.google.android.libraries.places:places:2.4.0'
     implementation 'com.google.android.gms:play-services-location:16.0.0'

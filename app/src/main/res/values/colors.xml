@@ -5,6 +5,7 @@
     <color name="colorAccent">#03DAC5</color>
     <color name="hint_color">#848484</color>
     <color name="toast_color">#3a3b3a</color>
+    <color name="toast_color_two">#c4c4c4</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="activity_background">#e6e6e6</color>
