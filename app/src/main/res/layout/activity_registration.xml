@@ -1,70 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rootLayout_RegistrationActivity"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFF"
+    android:orientation="vertical"
     tools:context=".activities.RegistrationActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:orientation="vertical"
 
-        >
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:orientation="vertical">
+            android:layout_height="200dp"
+            android:background="@drawable/map_banner"
+            android:scaleType="centerCrop"
+            android:orientation="vertical"
+            >
+
             <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:src="@drawable/app_logo"
-                android:layout_gravity="center_horizontal"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="20dp"
+
 
                 />
 
-            <LinearLayout
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="15dp"
+                android:textColor="@color/white"
+                android:text="Scavenger Hunter"
+                android:fontFamily="@font/font_bold"
+                android:textFontWeight="900"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="10dp"
+                android:textSize="25dp"/>
 
-                android:orientation="horizontal">
+            <TextView
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/font_semibold"
+                android:textColor="@color/white"
+                android:text="Enjoy real time hunt experince and play at your area"
+                android:layout_marginHorizontal="20dp"
+                android:textSize="15dp"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/font_semibold"
-                    android:textColor="#000"
-                    android:textSize="20dp"
-                    android:text="Scavanger"
-                    />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/font_semibold"
-                    android:textColor="@color/primary"
-                    android:textSize="20dp"
-                    android:text="Hunter"
-                    android:layout_marginLeft="5dp"
-                    />
-            </LinearLayout>
+
+
+
+
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_margin="20dp"
             android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/font_semibold"
+                android:textSize="20dp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="20dp"
+                android:text="Sign up"/>
 
             <EditText
                 android:id="@+id/edt_fullname"
@@ -172,8 +177,8 @@
 
 
 
-    </LinearLayout>
 
 
 
-</RelativeLayout>
+
+</LinearLayout>

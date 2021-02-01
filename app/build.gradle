@@ -1,17 +1,25 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
 
+    lintOptions {
+
+        checkReleaseBuilds false
+
+    }
+
 
     defaultConfig {
         applicationId "com.deepak.scavengerhunter"
-        minSdkVersion 26
+        minSdkVersion 23
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
         vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true //important
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -36,12 +44,13 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-location:17.1.0'
     implementation 'com.iarcuschin:simpleratingbar:0.1.5'
-
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    implementation 'com.google.firebase:firebase-storage:19.2.1'
     implementation 'com.google.android.libraries.places:places:2.4.0'
-    implementation 'com.google.android.gms:play-services-location:16.0.0'
+    implementation 'com.google.android.gms:play-services-location:17.1.0'
     implementation 'pl.charmas.android:android-reactive-location:0.10@aar'
-    implementation 'com.google.android.gms:play-services-places:16.1.0'
-    implementation 'com.google.android.gms:play-services-maps:16.1.0'
+    implementation 'com.google.android.gms:play-services-places:17.0.0'
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.material:material:1.1.0-alpha04'
 
     testImplementation 'junit:junit:4.12'

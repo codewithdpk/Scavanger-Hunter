@@ -8,170 +8,210 @@
 
     app:behavior_hideable="false"
     app:behavior_peekHeight="200dp"
-    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-    >
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/currentlocfab"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        app:backgroundTint="#FFF"
         android:layout_gravity="right|bottom"
-        android:layout_marginBottom="5dp"
         android:layout_marginRight="10dp"
-        app:fabSize="mini"
+        android:layout_marginBottom="5dp"
+        android:contentDescription="TODO"
         android:src="@drawable/ic_marker"
-        android:contentDescription="TODO" />
+        app:backgroundTint="#FFF"
+        app:fabSize="mini" />
 
-
-    <LinearLayout
-
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#FFFFFF"
-        android:padding="25dp"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
         <LinearLayout
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:background="#FFFFFF"
+            android:orientation="vertical"
+            android:padding="25dp">
 
+
+            <LinearLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_gps" />
+
+                <TextView
+                    android:id="@+id/locateaddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="20dp"
+                    android:fontFamily="@font/font_normal"
+                    android:text="Address text"
+                    android:textColor="@color/toast_color"
+
+                    android:textSize="15dp" />
+
+            </LinearLayout>
+            <!--        <View-->
+            <!--            android:layout_width="match_parent"-->
+            <!--            android:layout_height="1dp"-->
+            <!--            android:background="#d4d4d4"-->
+            <!--            android:layout_marginVertical="20dp"/>-->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/font_semibold"
+                android:text="Post Name"
+                android:textColor="@color/toast_color"
+                android:textSize="15dp" />
+
+            <EditText
+                android:id="@+id/edt_post_name"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginVertical="20dp"
+                android:background="@drawable/input_one"
+                android:fontFamily="@font/font_normal"
+                android:hint="Name of post"
+                android:padding="15dp"
+                android:textColor="#c4c4c4"
+                android:textColorHint="#c4c4c4"
+                android:textSize="15dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/font_semibold"
+                android:text="Information About The Post"
+                android:textColor="@color/toast_color"
+                android:textSize="15dp" />
+
+            <EditText
+                android:id="@+id/edt_add_post_information"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginVertical="15dp"
+                android:background="@drawable/input_one"
+                android:fontFamily="@font/font_normal"
+                android:gravity="top"
+                android:hint="Type information"
+                android:inputType="text|textMultiLine"
+                android:padding="10dp"
+                android:textColor="#c4c4c4"
+                android:textColorHint="#c4c4c4"
+                android:textSize="15dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/font_semibold"
+                android:text="Add a Quiz"
+                android:textColor="@color/toast_color"
+                android:textSize="15dp" />
+
+            <EditText
+                android:id="@+id/edt_quiz"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginVertical="20dp"
+                android:background="@drawable/input_one"
+                android:fontFamily="@font/font_normal"
+                android:hint="Quiz"
+                android:padding="15dp"
+                android:textColor="#c4c4c4"
+                android:textColorHint="#c4c4c4"
+                android:textSize="15dp" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/font_semibold"
+                android:text="Answer Type"
+                android:textColor="@color/toast_color"
+                android:textSize="15dp" />
+
+            <Spinner
+                android:id="@+id/simpleSpinner"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+
+                android:layout_marginVertical="20dp"
+                android:background="@drawable/input_one" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/font_semibold"
+                android:text="Add a Image"
+                android:textColor="@color/toast_color"
+                android:textSize="15dp" />
 
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/ic_gps"
-                android:layout_gravity="center_vertical"/>
-            <TextView
-                android:id="@+id/locateaddress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/font_normal"
-                android:text="Address text"
-                android:textSize="15dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="20dp"
+                android:id="@+id/image_selector"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginVertical="20dp"
+                android:src="@drawable/add_image_plus" />
 
-                android:textColor="@color/toast_color"
-                />
-
-        </LinearLayout>
-        <!--        <View-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="1dp"-->
-        <!--            android:background="#d4d4d4"-->
-        <!--            android:layout_marginVertical="20dp"/>-->
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/font_semibold"
-            android:text="Post Name"
-            android:layout_marginTop="20dp"
-            android:textColor="@color/toast_color"
-            android:textSize="15dp"/>
-
-        <EditText
-            android:id="@+id/edt_post_name"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginVertical="20dp"
-            android:background="@drawable/input_one"
-            android:textColor="#c4c4c4"
-            android:textColorHint="#c4c4c4"
-            android:padding="15dp"
-            android:fontFamily="@font/font_normal"
-            android:textSize="15dp"
-            android:hint="Name of post"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/font_semibold"
-            android:text="Information About The Post"
-            android:layout_marginTop="10dp"
-            android:textColor="@color/toast_color"
-            android:textSize="15dp"/>
-
-        <EditText
-            android:id="@+id/edt_add_post_information"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:inputType="text|textMultiLine"
-            android:background="@drawable/input_one"
-            android:hint="Type information"
-            android:textColorHint="#c4c4c4"
-            android:fontFamily="@font/font_normal"
-            android:textSize="15dp"
-            android:padding="10dp"
-            android:layout_marginVertical="15dp"
-            android:gravity="top"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/font_semibold"
-            android:text="Add a Quiz"
-            android:layout_marginTop="10dp"
-            android:textColor="@color/toast_color"
-            android:textSize="15dp"/>
-
-        <EditText
-            android:id="@+id/edt_quiz"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginVertical="20dp"
-            android:background="@drawable/input_one"
-            android:textColor="#c4c4c4"
-            android:textColorHint="#c4c4c4"
-            android:padding="15dp"
-            android:fontFamily="@font/font_normal"
-            android:textSize="15dp"
-            android:hint="Quiz"/>
-
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal">
 
             <RelativeLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true">
-                <Button
-                    android:id="@+id/btn_cancel_post"
-                    android:layout_width="160dp"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/btn_secondary"
-                    android:textAllCaps="false"
-                    android:text="Cancel"
-                    android:layout_alignParentLeft="true"
-                    android:textColor="@color/toast_color"
-                    android:textSize="15dp"
-                    android:fontFamily="@font/font_normal"
-                    />
+                android:layout_gravity="center_horizontal">
 
-                <Button
-                    android:id="@+id/btn_add_post"
-                    android:layout_width="160dp"
+                <RelativeLayout
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_toRightOf="@+id/btn_cancel_hunt"
-                    android:background="@drawable/btn_primary"
-                    android:textAllCaps="false"
-                    android:text="Add Post"
-                    android:textSize="15dp"
-                    android:textColor="@color/white"
-                    android:layout_alignParentRight="true"
-                    android:fontFamily="@font/font_normal"/>
+                    android:layout_centerHorizontal="true">
+
+                    <Button
+                        android:id="@+id/btn_cancel_post"
+                        android:layout_width="160dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:background="@drawable/btn_secondary"
+                        android:fontFamily="@font/font_normal"
+                        android:text="Cancel"
+                        android:textAllCaps="false"
+                        android:textColor="@color/toast_color"
+                        android:textSize="15dp" />
+
+                    <Button
+                        android:id="@+id/btn_add_post"
+                        android:layout_width="160dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginLeft="20dp"
+                        android:layout_toRightOf="@+id/btn_cancel_hunt"
+                        android:background="@drawable/btn_primary"
+                        android:fontFamily="@font/font_normal"
+                        android:text="Add Post"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="15dp" />
+                </RelativeLayout>
             </RelativeLayout>
-        </RelativeLayout>
 
-    </LinearLayout>
+        </LinearLayout>
+
+    </ScrollView>
 
 
 </LinearLayout>

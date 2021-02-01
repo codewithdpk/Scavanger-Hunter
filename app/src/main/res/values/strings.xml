@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Scavenger Hunter</string>
     <string name="google_map_key">AIzaSyCnarbJLmZMsjM2oDm8X3idaVQBgGWKXew</string>
+    <string name="explanation_permission_location_request">We are requesting the location permission as it is necessary for the app to perform search functionality properly.\nPlease select \"Grant Permission\" to try again and \"Cancel \" to deny permission.</string>
+    <string name="server_client_id">475378271869-9miiapi5j5rbjq9n0on5jq5lje1v0rll.apps.googleusercontent.com</string>
+
 </resources>

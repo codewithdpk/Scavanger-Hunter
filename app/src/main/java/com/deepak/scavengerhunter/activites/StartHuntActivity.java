@@ -1,13 +1,24 @@
 package com.deepak.scavengerhunter.activites;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +34,17 @@ import com.deepak.scavengerhunter.Adaptors.MyHuntsAdaptor;
 import com.deepak.scavengerhunter.Adaptors.PostsBlueAdapter;
 import com.deepak.scavengerhunter.Modals.PostsModal;
 import com.deepak.scavengerhunter.R;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,7 +54,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class StartHuntActivity extends AppCompatActivity {
+public class StartHuntActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     RecyclerView rv_posts;
     String HuntId;
@@ -45,6 +67,15 @@ public class StartHuntActivity extends AppCompatActivity {
     TextView tv_information_of_hunt;
     TextView tv_post_count;
 
+    GoogleMap mMap;
+    View mapView;
+    double startingLat;
+    double startingLong;
+    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private LocationManager AppUtils;
+    private GoogleApiClient mGoogleApiClient;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +85,64 @@ public class StartHuntActivity extends AppCompatActivity {
         Intent intent = getIntent();
         HuntId = intent.getStringExtra("hunt_id");
         Log.d("HUNT_ID:",HuntId);
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        AppUtils = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapView = mapFragment.getView();
+        mapFragment.getMapAsync(StartHuntActivity.this);
+
+        if (checkPlayServices()) {
+            // If this check succeeds, proceed with normal processing.
+            // Otherwise, prompt user to get valid Play Services APK.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                if (!AppUtils.isLocationEnabled()) {
+                    // notify user
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(StartHuntActivity.this);
+                    dialog.setMessage("Location not enabled!");
+                    dialog.setPositiveButton("Open location settings", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                            Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivity(myIntent);
+                        }
+                    });
+                    dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                            // TODO Auto-generated method stub
+
+                        }
+                    });
+                    dialog.show();
+                }
+            }
+            buildGoogleApiClient();
+        } else {
+            Toast.makeText(StartHuntActivity.this, "Location not supported in this device", Toast.LENGTH_SHORT).show();
+        }
+
         getHuntInformation(HuntId);
+
+
     }
+
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                //finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
 
     private void init(){
         postsList = new ArrayList<>();
@@ -90,6 +177,9 @@ public class StartHuntActivity extends AppCompatActivity {
                         tv_hunt_name_bottom.setText(huntDetails.getString("name"));
                         tv_owner_name.setText(ownerDetails.getString("name"));
                         //tv_information_of_hunt.setText(huntDetails.getString("information"));
+                        startingLat = huntDetails.getDouble("startingLat");
+                        startingLong = huntDetails.getDouble("startingLong");
+                        showMarkerAtMap(startingLat,startingLong);
                         tv_post_count.setText(posts.length()+" POSTS");
                         for(int i=0;i<posts.length();i++){
                             JSONObject post = posts.getJSONObject(i);
@@ -149,5 +239,55 @@ public class StartHuntActivity extends AppCompatActivity {
         progressDialog=new ProgressDialog(StartHuntActivity.this);
         progressDialog.setMessage("Loading...");
         progressDialog.setCancelable(false);
+    }
+
+    private void showMarkerAtMap(double lat, double longt){
+//        double latD = Double.parseDouble(lat);
+//        double longtD = Double.parseDouble(longt);
+
+//        MarkerOptions marker = new MarkerOptions().position(new LatLng(latD, longtD)).title("point");
+//        mMap.addMarker(marker);
+
+        LatLng sydney = new LatLng(lat, longt);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 13));
+        mMap.addMarker(new MarkerOptions().title("Sydney").snippet("The most populous city in Australia.").position(sydney));
+
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        showMarkerAtMap(startingLat,startingLong);
+
+    }
+
+
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
     }
 }

@@ -131,6 +131,15 @@ public class CreateAHuntActivity extends AppCompatActivity implements OnMapReady
         rootView = getWindow().getDecorView().getRootView();
         init();
 
+
+
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         // Create the hunt
         btn_create.setOnClickListener(new View.OnClickListener() {
             @Override

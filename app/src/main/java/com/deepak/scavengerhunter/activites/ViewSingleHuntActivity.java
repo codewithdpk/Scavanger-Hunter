@@ -1,6 +1,8 @@
 package com.deepak.scavengerhunter.activites;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -8,10 +10,14 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
@@ -24,6 +30,7 @@ import com.deepak.scavengerhunter.APIs.EndPoints;
 import com.deepak.scavengerhunter.APIs.IntentCodes;
 import com.deepak.scavengerhunter.Adaptors.MyHuntsAdaptor;
 import com.deepak.scavengerhunter.Adaptors.PostsAdapter;
+import com.deepak.scavengerhunter.BuildConfig;
 import com.deepak.scavengerhunter.Modals.PostsModal;
 import com.deepak.scavengerhunter.R;
 import com.deepak.scavengerhunter.classes.Utils;
@@ -33,6 +40,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,6 +59,7 @@ public class ViewSingleHuntActivity extends AppCompatActivity {
     TextView tv_ending_point_name;
     TextView tv_ending_point_address;
     TextView tv_add_new_hunt;
+    Button btn_complete_the_hunt;
 
     RecyclerView rv_hunts_posts;
 
@@ -72,6 +81,13 @@ public class ViewSingleHuntActivity extends AppCompatActivity {
             finish();
         }
 
+        btn_complete_the_hunt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                completeHunt();
+            }
+        });
+
         tv_add_new_hunt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,10 +105,16 @@ public class ViewSingleHuntActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == IntentCodes.CREATE_A_POST) {
             if (resultCode == Activity.RESULT_OK) {
-                    Log.d("INTENT_REQUEST","Running-ok");
+
+                    //Log.d("INTENT_REQUEST","Running-ok");
                     // Refresh data;
                     // Get hunt data
+                if(data.getBooleanExtra("result",true)){
                     getHuntData(hunt_id);
+                }else{
+
+                }
+
 
             }
             if (resultCode == Activity.RESULT_CANCELED) {
@@ -114,6 +136,7 @@ public class ViewSingleHuntActivity extends AppCompatActivity {
         tv_ending_point_address = findViewById(R.id.tv_ending_point_address);
         tv_add_new_hunt = findViewById(R.id.tv_add_new_hunt);
         rv_hunts_posts = findViewById(R.id.rv_hunts_posts);
+        btn_complete_the_hunt = findViewById(R.id.btn_complete_the_hunt);
         postsList = new ArrayList<>();
     }
 
@@ -138,7 +161,7 @@ public class ViewSingleHuntActivity extends AppCompatActivity {
                         hunt_name = data.getString("name");
                         tv_name_of_hunt.setText(data.getString("name"));
                         tv_hunt_owner.setText(data.getString("createdBy"));
-                        tv_post_number.setText("0 Posts");
+
                         tv_starting_point_name.setText(data.getString("startingArea"));
                         tv_starting_point_address.setText(data.getString("completeStartingAddress"));
                         if (data.getString("endingArea").equals("none")) {
@@ -166,6 +189,8 @@ public class ViewSingleHuntActivity extends AppCompatActivity {
                                     post.getString("updated"),
                                     post.getString("status")));
                         }
+
+                        tv_post_number.setText(postsList.size()+" posts");
 
                         PostsAdapter adapter = new PostsAdapter(ViewSingleHuntActivity.this,postsList);
                         LinearLayoutManager layoutManager = new LinearLayoutManager(ViewSingleHuntActivity.this, LinearLayoutManager.VERTICAL, false);
@@ -211,4 +236,27 @@ public class ViewSingleHuntActivity extends AppCompatActivity {
         progressDialog.setMessage("Loading...");
         progressDialog.setCancelable(false);
     }
+    private void completeHunt() {
+        final CharSequence[] options = { "Use latest post as end point", "Add New post for end point","Cancel" };
+        AlertDialog.Builder builder = new AlertDialog.Builder(ViewSingleHuntActivity.this);
+        builder.setTitle("Add Photo!");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (options[item].equals("Use latest post as end point"))
+                {
+
+                }
+                else if (options[item].equals("Add New post for end point"))
+                {
+
+                }
+                else if (options[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+
 }

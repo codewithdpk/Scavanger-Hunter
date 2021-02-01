@@ -23,7 +23,7 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyHuntsAdaptor extends RecyclerView.Adapter<MyHuntsAdaptor.ViewHolder> {
+public class HuntsAdapter extends RecyclerView.Adapter<HuntsAdapter.ViewHolder> {
 
     private ArrayList<HuntModal> hunts;
     private LayoutInflater mInflater;
@@ -31,7 +31,7 @@ public class MyHuntsAdaptor extends RecyclerView.Adapter<MyHuntsAdaptor.ViewHold
 
 
     // data is passed into the constructor
-    public MyHuntsAdaptor(Context context, ArrayList<HuntModal> hunts) {
+    public HuntsAdapter(Context context, ArrayList<HuntModal> hunts) {
         this.mInflater = LayoutInflater.from(context);
         this.hunts = hunts;
         this.context = context;
@@ -63,7 +63,7 @@ public class MyHuntsAdaptor extends RecyclerView.Adapter<MyHuntsAdaptor.ViewHold
         holder.card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, ViewSingleHuntActivity.class);
+                Intent intent = new Intent(context, StartHuntActivity.class);
                 intent.putExtra("hunt_id",huntModal.getHunt_id());
                 context.startActivity(intent);
             }

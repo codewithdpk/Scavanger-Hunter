@@ -266,4 +266,16 @@
             android:textColor="@color/primary"/>
     </LinearLayout>
 
+    <Button
+        android:id="@+id/btn_complete_the_hunt"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/btn_primary"
+        android:layout_margin="20dp"
+        android:text="Complete the Hunt"
+        android:textAllCaps="false"
+        android:fontFamily="@font/font_normal"
+        android:textSize="18dp"
+        />
+
 </LinearLayout>

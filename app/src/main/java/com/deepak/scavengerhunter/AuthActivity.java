@@ -27,7 +27,9 @@ import com.deepak.scavengerhunter.APIs.SharedPref;
 import com.deepak.scavengerhunter.R;
 
 import com.deepak.scavengerhunter.activites.HomeActivity;
+import com.deepak.scavengerhunter.activites.HomeBaseActivity;
 import com.deepak.scavengerhunter.classes.Utils;
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -45,7 +47,7 @@ public class AuthActivity extends AppCompatActivity {
 
 
     Button btn_continue_with_google;
-    Button btn_continue_with_facebook;
+    //Button btn_continue_with_facebook;
     Button btn_signin;
 
     TextView txt_signup;
@@ -142,7 +144,7 @@ public class AuthActivity extends AppCompatActivity {
 
     private void init(){
         btn_continue_with_google = (Button) findViewById(R.id.btn_continue_with_google);
-        btn_continue_with_facebook = (Button) findViewById(R.id.btn_continue_with_facebook);
+        //btn_continue_with_facebook = (Button) findViewById(R.id.btn_continue_with_facebook);
         btn_signin = (Button) findViewById(R.id.btn_signin);
         txt_signup = (TextView) findViewById(R.id.txt_signup);
         txt_forgot_password = (TextView) findViewById(R.id.txt_forgot_password);
@@ -182,7 +184,8 @@ public class AuthActivity extends AppCompatActivity {
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-
+            Log.d("GOOGLE-SIGNIN","Running");
+            singinWithGoogle(account);
             // Signed in successfully, show authenticated UI.
             //updateUI(account);
         } catch (ApiException e) {
@@ -191,6 +194,59 @@ public class AuthActivity extends AppCompatActivity {
             Log.w("GoogleSignIn", "signInResult:failed code=" + e.getStatusCode());
             //updateUI(null);
         }
+    }
+
+    private void singinWithGoogle(GoogleSignInAccount account) {
+
+        JSONObject params = new JSONObject();
+
+        try {
+            params.put("name", account.getDisplayName());
+            params.put("email",account.getEmail());
+            params.put("password","none");
+            params.put("googleid",account.getId());
+            params.put("facebookid","none");
+            params.put("mode","google");
+            params.put("image_url",account.getPhotoUrl());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jsonOblect = new JsonObjectRequest(Request.Method.POST, EndPoints.LOGIN_GOOGLE, params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("RESPONSE:", response.toString());
+                pDialog.dismiss();
+                Utils.createToast(AuthActivity.this,rootView,"Login Success.");
+                //Utils.createToast(context,rootView,response.getJSONObject("userInfo").toString());
+
+                try {
+                    SharedPref.saveUserInfo(AuthActivity.this,response.getJSONObject("userDetails").toString());
+                    startActivity(new Intent(AuthActivity.this, HomeBaseActivity.class));
+                    finish();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    pDialog.dismiss();
+                }
+
+                //Toast.makeText(getApplicationContext(), "Response:  " + response.toString(), Toast.LENGTH_SHORT).show();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("VOLLEY", error.toString());
+                Toast.makeText(AuthActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+
+                pDialog.dismiss();
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                final Map<String, String> headers = new HashMap<>();
+                return headers;
+            }
+        };
+        AppController.getInstance().addToRequestQueue(jsonOblect);
     }
 
     private void hitApi(final Context context, String url, final String email, final String password, final View view) {
@@ -215,7 +271,7 @@ public class AuthActivity extends AppCompatActivity {
 
                             SharedPref.saveUserInfo(context,response.getJSONObject("userInfo").toString());
 
-                            startActivity(new Intent(AuthActivity.this, HomeActivity.class));
+                            startActivity(new Intent(AuthActivity.this, HomeBaseActivity.class));
                             finish();
 
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +22,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+import com.deepak.scavengerhunter.APIs.SharedPref;
 import com.deepak.scavengerhunter.Adaptors.PeopleAdapter;
 import com.deepak.scavengerhunter.Modals.People;
 import com.deepak.scavengerhunter.R;
@@ -45,6 +48,9 @@ import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -56,6 +62,7 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
     private CameraPosition cameraPosition;
     // The entry point to the Places API.
     private PlacesClient placesClient;
+    ImageView image_user;
 
     // The entry point to the Fused Location Provider.
     private FusedLocationProviderClient fusedLocationProviderClient;
@@ -97,6 +104,21 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
         }
 
         init(rootView);
+
+        JSONObject info = SharedPref.getUserInfo(getContext());
+        //Log.d("USER_INFO",info.toString());
+        try {
+            if(!info.getString("image_url").equals("none")){
+                Glide.with(getContext())
+                        .asBitmap()
+                        .load(info.getString("image_url"))
+                        .into(image_user);
+            }else{
+                image_user.setImageResource(R.drawable.user);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
 
         ArrayList<People> storeOffers = new ArrayList<>();
@@ -422,5 +444,6 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback {
     private void init(View view){
         ic_add_new_post = (ImageView) view.findViewById(R.id.ic_add_new_post);
         edt_search_hunts = (AutoCompleteTextView) view.findViewById(R.id.edt_search_hunts);
+        image_user = (ImageView) view.findViewById(R.id.user_image);
     }
 }

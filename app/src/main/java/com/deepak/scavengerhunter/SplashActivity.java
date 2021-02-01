@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 
 import com.deepak.scavengerhunter.APIs.SharedPref;
 import com.deepak.scavengerhunter.R;
@@ -19,6 +20,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        //Log.d("SPLASH:",SharedPref.getUserInfo(SplashActivity.this).toString());
         // Delay
         int secondsDelayed = 1;
         new Handler().postDelayed(new Runnable() {

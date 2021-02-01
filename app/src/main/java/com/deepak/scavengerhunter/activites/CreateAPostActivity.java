@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.app.Activity;
@@ -12,33 +13,49 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.RectF;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.ResultReceiver;
+import android.provider.MediaStore;
 import android.provider.Settings;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.deepak.scavengerhunter.APIs.AppController;
 import com.deepak.scavengerhunter.APIs.EndPoints;
 import com.deepak.scavengerhunter.APIs.IntentCodes;
 import com.deepak.scavengerhunter.APIs.SharedPref;
+import com.deepak.scavengerhunter.BuildConfig;
 import com.deepak.scavengerhunter.R;
 import com.deepak.scavengerhunter.classes.Utils;
 import com.google.android.gms.common.ConnectionResult;
@@ -58,20 +75,37 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
 
-public class CreateAPostActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class CreateAPostActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, AdapterView.OnItemSelectedListener {
     private GoogleMap mMap;
     View mapView;
     private GoogleApiClient mGoogleApiClient;
@@ -81,18 +115,22 @@ public class CreateAPostActivity extends AppCompatActivity implements OnMapReady
     TextView mLocationMarkerText;
     private LatLng mCenterLatLong;
     private List<Address> list;
-
     private BottomSheetBehavior sheetBehavior;
     private LinearLayout bottom_sheet;
     TextView fetchedaddress;
     String knownName;
     FloatingActionButton getMyCurrentLocation;
-
     EditText edt_post_name;
     EditText edt_post_information;
     EditText edt_quiz;
     Button btn_create_post;
     Button btn_cancel_post;
+    ImageView image_selector;
+
+    Bitmap post_image = null;
+
+    public int IMAGE_CAPTURE = 1;
+    public int IMAGE_CHOOSE = 2;
 
 
     /**
@@ -114,6 +152,9 @@ public class CreateAPostActivity extends AppCompatActivity implements OnMapReady
     View rootView;
     public String hunt_id;
     public String hunt_name;
+    Spinner ansType;
+    String[] bankNames = {"Media", "Text", "Both"};
+    String selectedAnswerType = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,7 +164,18 @@ public class CreateAPostActivity extends AppCompatActivity implements OnMapReady
         rootView = getWindow().getDecorView().getRootView();
         hunt_id = getIntent().getStringExtra("hunt_id");
         hunt_name = getIntent().getStringExtra("hunt_name");
+        FirebaseApp.initializeApp(CreateAPostActivity.this);
+
         init();
+
+
+        ansType.setOnItemSelectedListener(this);
+
+//Creating the ArrayAdapter instance having the bank name list
+        ArrayAdapter aa = new ArrayAdapter(this, android.R.layout.simple_spinner_item, bankNames);
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//Setting the ArrayAdapter data on the Spinner
+        ansType.setAdapter(aa);
 
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -169,30 +221,37 @@ public class CreateAPostActivity extends AppCompatActivity implements OnMapReady
 
                 double lat = currentLocation.latitude;
                 double Long = currentLocation.longitude;
-                if(post_name.equals("") || information.equals("") || quiz.equals("")){
-                    Utils.createToast(CreateAPostActivity.this,rootView,"Please fill all details");
-                }else{
-                    Utils.createToast(CreateAPostActivity.this,rootView,AddressString);
+                if (post_name.equals("") || information.equals("") || quiz.equals("")) {
+                    Utils.createToast(CreateAPostActivity.this, rootView, "Please fill all details");
+                } else {
+                    if (post_image != null) {
 
-                    JSONObject params = new JSONObject();
-                    try {
-                        params.put("post_name",post_name);
-                        params.put("address",AddressString);
-                        params.put("long",Long);
-                        params.put("lat",lat);
-                        params.put("hunt_id",hunt_id);
-                        params.put("hunt_name",hunt_name);
-                        params.put("createdBy",SharedPref.getUserId(CreateAPostActivity.this));
-                        params.put("information",information);
-                        params.put("defaultQuestion",quiz);
-                        createPost(CreateAPostActivity.this,params,rootView);
+                        if (selectedAnswerType != null) {
+                            //Utils.createToast(CreateAPostActivity.this,rootView,AddressString);
+                            progressDialog.show();
+                            Bitmap bt = getScaledBitmap(post_image);
+                            uploadFile(bt, post_name, AddressString, Long, lat, hunt_id, hunt_name, information, quiz, selectedAnswerType);
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                        } else {
+                            Utils.createToast(CreateAPostActivity.this, rootView, "Please select answer type.");
+
+                        }
+
+                    } else {
+                        Utils.createToast(CreateAPostActivity.this, rootView, "Please add a image.");
+
                     }
+
 
                 }
 
+            }
+        });
+
+        image_selector.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectImage();
             }
         });
 
@@ -264,8 +323,6 @@ public class CreateAPostActivity extends AppCompatActivity implements OnMapReady
     }
 
 
-
-
     private void init() {
         mLocationMarkerText = (TextView) findViewById(R.id.locationMarkertext);
         getMyCurrentLocation = findViewById(R.id.currentlocfab);
@@ -277,6 +334,8 @@ public class CreateAPostActivity extends AppCompatActivity implements OnMapReady
         btn_cancel_post = findViewById(R.id.btn_cancel_post);
         btn_create_post = findViewById(R.id.btn_add_post);
         backbtn = findViewById(R.id.ic_back_create_a_post);
+        image_selector = findViewById(R.id.image_selector);
+        ansType = (Spinner) findViewById(R.id.simpleSpinner);
         progressBar();
     }
 
@@ -364,7 +423,7 @@ public class CreateAPostActivity extends AppCompatActivity implements OnMapReady
         Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
         if (mLastLocation != null) {
-            changeMap(mLastLocation);
+             changeMap(mLastLocation);
             Log.d(TAG, "ON connected");
 
         } else
@@ -607,50 +666,104 @@ public class CreateAPostActivity extends AppCompatActivity implements OnMapReady
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        //Log.d("This is your result code: ",resultCode+"");
+        Toast.makeText(mContext, "This is your result code: " + resultCode, Toast.LENGTH_SHORT).show();
+        if (requestCode == 1) {
 
-
-        // Check that the result was from the autocomplete widget.
-        if (requestCode == REQUEST_CODE_AUTOCOMPLETE) {
-            if (resultCode == RESULT_OK) {
-                // Get the user's selected place from the Intent.
-                Place place = (Place) PlaceAutocomplete.getPlace(mContext, data);
-
-                // TODO call location based filter
-
-
-                LatLng latLong;
-
-
-                latLong = place.getLatLng();
-
-                //mLocationText.setText(place.getName() + "");
-
-                CameraPosition cameraPosition = new CameraPosition.Builder()
-                        .target(latLong).zoom(19f).tilt(70).build();
-
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return;
+            File f = new File(Environment.getExternalStorageDirectory().toString());
+            for (File temp : f.listFiles()) {
+                if (temp.getName().equals("temp.jpg")) {
+                    f = temp;
+                    break;
                 }
-                mMap.setMyLocationEnabled(true);
-                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
-
+            }
+            try {
+                Bitmap bitmap;
+                BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+                bitmap = BitmapFactory.decodeFile(f.getAbsolutePath(),
+                        bitmapOptions);
+                //post_image = getStringImage(bitmap);
+                post_image = bitmap;
+                image_selector.setImageBitmap(bitmap);
+                String path = android.os.Environment
+                        .getExternalStorageDirectory()
+                        + File.separator
+                        + "Phoenix" + File.separator + "default";
+                f.delete();
+                OutputStream outFile = null;
+                File file = new File(path, String.valueOf(System.currentTimeMillis()) + ".jpg");
+                try {
+                    outFile = new FileOutputStream(file);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 85, outFile);
+                    outFile.flush();
+                    outFile.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
-
-        } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
-            Status status = PlaceAutocomplete.getStatus(mContext, data);
-        } else if (resultCode == RESULT_CANCELED) {
-            // Indicates that the activity closed before a selection was made. For example if
-            // the user pressed the back button.
+        } else if (requestCode == 2) {
+            Uri selectedImage = data.getData();
+            String[] filePath = {MediaStore.Images.Media.DATA};
+            Cursor c = getContentResolver().query(selectedImage, filePath, null, null, null);
+            c.moveToFirst();
+            int columnIndex = c.getColumnIndex(filePath[0]);
+            String picturePath = c.getString(columnIndex);
+            c.close();
+            Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
+            Log.w("path", picturePath + "");
+            image_selector.setImageBitmap(thumbnail);
+            //post_image = getStringImage(thumbnail);
+            post_image = thumbnail;
         }
+        // Check that the result was from the autocomplete widget.
+//        if (requestCode == REQUEST_CODE_AUTOCOMPLETE) {
+//            if (resultCode == RESULT_OK) {
+//                // Get the user's selected place from the Intent.
+//                Place place = (Place) PlaceAutocomplete.getPlace(mContext, data);
+//
+//                // TODO call location based filter
+//
+//
+//                LatLng latLong;
+//
+//
+//                latLong = place.getLatLng();
+//
+//                //mLocationText.setText(place.getName() + "");
+//
+//                CameraPosition cameraPosition = new CameraPosition.Builder()
+//                        .target(latLong).zoom(19f).tilt(70).build();
+//
+//                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//                    // TODO: Consider calling
+//                    //    ActivityCompat#requestPermissions
+//                    // here to request the missing permissions, and then overriding
+//                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//                    //                                          int[] grantResults)
+//                    // to handle the case where the user grants the permission. See the documentation
+//                    // for ActivityCompat#requestPermissions for more details.
+//                    return;
+//                }
+//                mMap.setMyLocationEnabled(true);
+//                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+//
+//
+//            }
+//
+//
+//        } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+//            Status status = PlaceAutocomplete.getStatus(mContext, data);
+//        } else if (resultCode == RESULT_CANCELED) {
+//            // Indicates that the activity closed before a selection was made. For example if
+//            // the user pressed the back button.
+//        }
 
     }
 
@@ -687,7 +800,7 @@ public class CreateAPostActivity extends AppCompatActivity implements OnMapReady
     private void createPost(final Context context, JSONObject params, final View view) {
 
 
-        progressDialog.show();
+        // progressDialog.show();
         JsonObjectRequest jsonOblect = new JsonObjectRequest(Request.Method.POST, EndPoints.CREATE_POST, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -695,15 +808,15 @@ public class CreateAPostActivity extends AppCompatActivity implements OnMapReady
                 //Utils.createToast(context,rootView,response.toString());
                 progressDialog.dismiss();
                 try {
-                    if(response.getString("status").equals("OK")){
+                    if (response.getString("status").equals("OK")) {
                         Intent returnIntent = new Intent();
-                        returnIntent.putExtra("result",true);
-                        setResult(IntentCodes.CREATE_A_POST,returnIntent);
+                        returnIntent.putExtra("result", true);
+                        setResult(IntentCodes.CREATE_A_POST, returnIntent);
                         finish();
-                    }else{
+                    } else {
                         Intent returnIntent = new Intent();
-                        returnIntent.putExtra("result",false);
-                        setResult(Activity.RESULT_OK,returnIntent);
+                        returnIntent.putExtra("result", false);
+                        setResult(Activity.RESULT_OK, returnIntent);
                         finish();
                     }
                 } catch (JSONException e) {
@@ -713,12 +826,13 @@ public class CreateAPostActivity extends AppCompatActivity implements OnMapReady
                 }
 
 
-
                 //Toast.makeText(getApplicationContext(), "Response:  " + response.toString(), Toast.LENGTH_SHORT).show();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+
+
                 Log.d("VOLLEY", error.toString());
                 Utils.createToast(context, rootView, error.toString());
                 progressDialog.dismiss();
@@ -729,6 +843,7 @@ public class CreateAPostActivity extends AppCompatActivity implements OnMapReady
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 final Map<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json");
                 return headers;
             }
         };
@@ -736,4 +851,138 @@ public class CreateAPostActivity extends AppCompatActivity implements OnMapReady
 
 
     }
+
+    private void selectImage() {
+        final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(CreateAPostActivity.this);
+        builder.setTitle("Add Photo!");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (options[item].equals("Take Photo")) {
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    File f = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
+                    Uri uri = FileProvider.getUriForFile(CreateAPostActivity.this, BuildConfig.APPLICATION_ID + ".provider", f);
+
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    startActivityForResult(intent, 1);
+                } else if (options[item].equals("Choose from Gallery")) {
+                    Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(intent, 2);
+                } else if (options[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+
+    public String getStringImage(Bitmap bmp) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] imageBytes = baos.toByteArray();
+        return Base64.encodeToString(imageBytes, Base64.DEFAULT);
+
+    }
+
+    private void uploadFile(Bitmap bitmap, final String post_name, String addressString, final double aLong, final double lat, String hunt_id, String hunt_name, final String information, final String quiz, final String selectedAnswerType) {
+        final JSONObject[] RES = {new JSONObject()};
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReferenceFromUrl("gs://scavenger-hunter-1608147586701.appspot.com");
+        StorageReference mountainImagesRef = storageRef.child(generateImageName() + ".jpg");
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos);
+        byte[] data = baos.toByteArray();
+        UploadTask uploadTask = mountainImagesRef.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Utils.createToast(getApplicationContext(), rootView, exception.getMessage());
+                Log.d("FIREBASE", exception.getMessage());
+                progressDialog.dismiss();
+
+
+                // Handle unsuccessful uploads
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                Task<Uri> firebaseUri = taskSnapshot.getStorage().getDownloadUrl();
+                firebaseUri.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+
+                        String url = uri.toString();
+                        Log.e("TAG:", "the url is: " + url);
+
+                        JSONObject params = new JSONObject();
+
+                        try {
+                            params.put("post_name", post_name);
+                            params.put("address", AddressString);
+                            params.put("long", aLong);
+                            params.put("lat", lat);
+                            params.put("hunt_id", CreateAPostActivity.this.hunt_id);
+                            params.put("hunt_name", CreateAPostActivity.this.hunt_name);
+                            params.put("createdBy", SharedPref.getUserId(CreateAPostActivity.this));
+                            params.put("information", information);
+                            params.put("defaultQuestion", quiz);
+                            params.put("post_image", url);
+                            params.put("answerType", selectedAnswerType);
+                            createPost(CreateAPostActivity.this, params, rootView);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+//                        String ref = yourStorageReference.getName();
+//                        Log.e("TAG:", "the ref is: " + ref);
+                    }
+                });
+
+                //sendMsg("" + downloadUrl, 2);
+
+
+            }
+        });
+
+
+    }
+
+    private String generateImageName() {
+        String uniqueID = UUID.randomUUID().toString();
+
+        return uniqueID;
+    }
+
+
+    public Bitmap getScaledBitmap(Bitmap image) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);//Compression quality, here 100 means no compression, the storage of compressed data to baos
+        int options = 90;
+        while (baos.toByteArray().length / 1024 > 400) {  //Loop if compressed picture is greater than 400kb, than to compression
+            baos.reset();//Reset baos is empty baos
+            image.compress(Bitmap.CompressFormat.JPEG, options, baos);//The compression options%, storing the compressed data to the baos
+            options -= 10;//Every time reduced by 10
+        }
+        ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());//The storage of compressed data in the baos to ByteArrayInputStream
+        Bitmap bitmap = BitmapFactory.decodeStream(isBm, null, null);//The ByteArrayInputStream data generation
+        return bitmap;
+    }
+
+    //Performing action onItemSelected and onNothing selected
+    @Override
+    public void onItemSelected(AdapterView<?> arg0, View arg1, int position, long id) {
+        Toast.makeText(getApplicationContext(), bankNames[position], Toast.LENGTH_LONG).show();
+        selectedAnswerType = bankNames[position];
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> arg0) {
+// TODO Auto-generated method stub
+        selectedAnswerType = null;
+    }
+
+
 }

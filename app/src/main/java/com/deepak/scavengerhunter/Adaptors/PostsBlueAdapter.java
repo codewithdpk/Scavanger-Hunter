@@ -6,12 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.deepak.scavengerhunter.Modals.PostsModal;
 import com.deepak.scavengerhunter.R;
-
 import java.util.ArrayList;
 
 public class PostsBlueAdapter  extends RecyclerView.Adapter<PostsBlueAdapter.ViewHolder> {
@@ -19,8 +16,6 @@ public class PostsBlueAdapter  extends RecyclerView.Adapter<PostsBlueAdapter.Vie
     private final ArrayList<PostsModal> postsList;
     private final LayoutInflater mInflater;
     public Context context;
-
-
     // data is passed into the constructor
     public PostsBlueAdapter(Context context, ArrayList<PostsModal> postsList) {
         this.mInflater = LayoutInflater.from(context);
@@ -34,19 +29,12 @@ public class PostsBlueAdapter  extends RecyclerView.Adapter<PostsBlueAdapter.Vie
         View view = mInflater.inflate(R.layout.item_layout_post, parent, false);
         return new PostsBlueAdapter.ViewHolder(view);
     }
-
     // binds the data to the TextView in each row
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(PostsBlueAdapter.ViewHolder holder, int position) {
         final PostsModal postsModal = postsList.get(position);
         holder.tv_post_name.setText(postsModal.getPost_name());
-
-
-
-
-
-
     }
 
     // total number of rows
@@ -59,17 +47,12 @@ public class PostsBlueAdapter  extends RecyclerView.Adapter<PostsBlueAdapter.Vie
     // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView tv_post_name;
-
-
-
         ViewHolder(View itemView) {
             super(itemView);
             tv_post_name = itemView.findViewById(R.id.tv_post_name);
 
 
         }
-
-
     }
 
 
