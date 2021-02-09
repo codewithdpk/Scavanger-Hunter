@@ -177,6 +177,7 @@
             android:orientation="vertical"/>
 
         <Button
+            android:id="@+id/btn_start_hunt"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:textAllCaps="false"

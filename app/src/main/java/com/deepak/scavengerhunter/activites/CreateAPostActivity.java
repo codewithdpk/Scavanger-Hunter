@@ -132,7 +132,6 @@ public class CreateAPostActivity extends AppCompatActivity implements OnMapReady
     public int IMAGE_CAPTURE = 1;
     public int IMAGE_CHOOSE = 2;
 
-
     /**
      * Receiver registered with this activity to get the response from FetchAddressIntentService.
      */

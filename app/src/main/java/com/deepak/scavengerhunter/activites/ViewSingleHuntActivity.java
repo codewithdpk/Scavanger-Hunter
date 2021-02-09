@@ -50,7 +50,6 @@ public class ViewSingleHuntActivity extends AppCompatActivity {
     String hunt_id;
     ProgressDialog progressDialog;
     View rootView;
-
     TextView tv_name_of_hunt;
     TextView tv_hunt_owner;
     TextView tv_post_number;
@@ -60,11 +59,10 @@ public class ViewSingleHuntActivity extends AppCompatActivity {
     TextView tv_ending_point_address;
     TextView tv_add_new_hunt;
     Button btn_complete_the_hunt;
-
     RecyclerView rv_hunts_posts;
-
     ArrayList<PostsModal> postsList;
     String hunt_name;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +82,12 @@ public class ViewSingleHuntActivity extends AppCompatActivity {
         btn_complete_the_hunt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                completeHunt();
+                if(postsList.size() == 0){
+                    Utils.createToast(ViewSingleHuntActivity.this,rootView,"You at least have one post in the hunt.");
+                }else{
+                    completeHunt();
+                }
+
             }
         });
 
@@ -103,25 +106,26 @@ public class ViewSingleHuntActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == IntentCodes.CREATE_A_POST) {
-            if (resultCode == Activity.RESULT_OK) {
-
-                    //Log.d("INTENT_REQUEST","Running-ok");
-                    // Refresh data;
-                    // Get hunt data
-                if(data.getBooleanExtra("result",true)){
-                    getHuntData(hunt_id);
-                }else{
-
-                }
-
-
-            }
-            if (resultCode == Activity.RESULT_CANCELED) {
-                //Write your code if there's no result
-                Log.d("INTENT_REQUEST","Running-calceled");
-            }
-        }
+        Log.d("RESULT:",resultCode+"");
+        getHuntData(hunt_id);
+ //       if (requestCode == IntentCodes.CREATE_A_POST) {
+//            Log.d("RESULT:",resultCode+"");
+//            if (resultCode == Activity.RESULT_OK) {
+//
+//
+//                if(data.getBooleanExtra("result",true)){
+//
+//                }else{
+//
+//                }
+//
+//
+//            }
+//            if (resultCode == Activity.RESULT_CANCELED) {
+//                //Write your code if there's no result
+//                Log.d("INTENT_REQUEST","Running-calceled");
+//            }
+ //       }
     }
 
     private void init() {
@@ -141,6 +145,7 @@ public class ViewSingleHuntActivity extends AppCompatActivity {
     }
 
     private void getHuntData(String hunt_id) {
+        postsList.clear();
         progressDialog.show();
 
         JSONObject params = new JSONObject();
@@ -245,7 +250,7 @@ public class ViewSingleHuntActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int item) {
                 if (options[item].equals("Use latest post as end point"))
                 {
-
+                    useLatestPostAsEndingPoint();
                 }
                 else if (options[item].equals("Add New post for end point"))
                 {
@@ -258,5 +263,60 @@ public class ViewSingleHuntActivity extends AppCompatActivity {
         });
         builder.show();
     }
+
+
+    private void useLatestPostAsEndingPoint(){
+        progressDialog.show();
+        JSONObject params = new JSONObject();
+        try {
+            params.put("hunt_id", hunt_id);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonOblect = new JsonObjectRequest(Request.Method.POST, EndPoints.USE_LATEST_POST_ENDING_POINT, params, new Response.Listener<JSONObject>() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("RESPONSE:", response.toString());
+                progressDialog.dismiss();
+                try {
+                    if(response.getString("status").equals("OK")){
+                        Utils.createToast(ViewSingleHuntActivity.this,rootView,response.getString("message"));
+                        getHuntData(hunt_id);
+                    }else{
+                        Utils.createToast(ViewSingleHuntActivity.this,rootView,response.getString("message"));
+
+                    }
+                } catch (JSONException e) {
+                    //progressDialog.dismiss();
+                    e.printStackTrace();
+                }
+
+
+
+
+
+                //Toast.makeText(getApplicationContext(), "Response:  " + response.toString(), Toast.LENGTH_SHORT).show();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("VOLLEY", error.toString());
+                Utils.createToast(ViewSingleHuntActivity.this, rootView, error.toString());
+                progressDialog.dismiss();
+
+
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                final Map<String, String> headers = new HashMap<>();
+                return headers;
+            }
+        };
+        AppController.getInstance().addToRequestQueue(jsonOblect);
+    }
+
+
 
 }
