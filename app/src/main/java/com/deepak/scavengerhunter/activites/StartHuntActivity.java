@@ -42,6 +42,7 @@ import com.deepak.scavengerhunter.Adaptors.MyHuntsAdaptor;
 import com.deepak.scavengerhunter.Adaptors.PostsBlueAdapter;
 import com.deepak.scavengerhunter.Modals.PostsModal;
 import com.deepak.scavengerhunter.R;
+import com.deepak.scavengerhunter.classes.Utils;
 import com.deepak.scavengerhunter.services.ChatHeadService;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -101,6 +102,8 @@ public class StartHuntActivity extends AppCompatActivity implements OnMapReadyCa
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
     private static final int CODE_DRAW_OVER_OTHER_APP_PERMISSION = 2084;
     int huntSequance = 0;
+    View rootView;
+    private boolean isActivityReopened = false;
 
 
     @Override
@@ -151,14 +154,14 @@ public class StartHuntActivity extends AppCompatActivity implements OnMapReadyCa
             Toast.makeText(StartHuntActivity.this, "Location not supported in this device", Toast.LENGTH_SHORT).show();
         }
 
-        getHuntInformation(HuntId);
+            getHuntInformation(HuntId);
+
+
         btn_start_hunt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                checkHuntStatus(SharedPref.getUserId(StartHuntActivity.this),HuntId);
-
-
+                checkHuntStatus(SharedPref.getUserId(StartHuntActivity.this), HuntId);
 
 
             }
@@ -170,10 +173,33 @@ public class StartHuntActivity extends AppCompatActivity implements OnMapReadyCa
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("ONRESUME","OnResume called bro. "+huntSequance);
-        if(currentLat != null && currentLong!=null && postsList!=null){
-            float distance = checkDistance(currentLat,currentLong,Double.parseDouble(postsList.get(0).getLat()),Double.parseDouble(postsList.get(0).getLong()));
+
+        Log.d("ONRESUME", "OnResume called bro. " + huntSequance);
+        if (currentLat!=null && currentLong!= null && postsList != null) {
+            // instantiate the location manager, note you will need to request permissions in your manifest
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            // get the last know location from your location manager.
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            //Log.d("LOCATION:",location.toString());
+            float distance = checkDistance(location.getLatitude(),location.getLongitude(),Double.parseDouble(postsList.get(0).getLat()),Double.parseDouble(postsList.get(0).getLong()));
             Log.d("ONRESUME",distance+"");
+            if(distance <=10.00){
+                Utils.createToast(StartHuntActivity.this,rootView,"Cool, You have reached at posts destination. ");
+
+
+            }else{
+                Utils.createToast(StartHuntActivity.this,rootView,"You have not reached to destination yet, This can not be considered as a complete post.");
+            }
         }
 
     }
@@ -234,6 +260,7 @@ public class StartHuntActivity extends AppCompatActivity implements OnMapReadyCa
 
 
     private void init() {
+        rootView = getWindow().getDecorView().getRootView();
         postsList = new ArrayList<>();
         rv_posts = findViewById(R.id.posts_of_hunts);
         tv_hunt_name_top = findViewById(R.id.tv_hunt_name_top);
@@ -246,6 +273,7 @@ public class StartHuntActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
     private void getHuntInformation(String id) {
+        Log.d("HUNT-CALLED",id);
         progressDialog.show();
         JSONObject params = new JSONObject();
         try {
@@ -468,8 +496,10 @@ public class StartHuntActivity extends AppCompatActivity implements OnMapReadyCa
                 try {
                     if(response.getString("status").equals("created")){
                         startHuntIntent();
+                        progressDialog.dismiss();
                     }else{
                         startHuntIntent();
+                        progressDialog.dismiss();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -482,8 +512,8 @@ public class StartHuntActivity extends AppCompatActivity implements OnMapReadyCa
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("VOLLEY", error.toString());
-                Toast.makeText(StartHuntActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                Log.d("VOLLEY", error.getMessage());
+                Toast.makeText(StartHuntActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
                 progressDialog.dismiss();
 
             }

@@ -6,26 +6,29 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
-
-
-
     <application
         android:name=".APIs.AppController"
         android:allowBackup="true"
+        android:hardwareAccelerated="false"
         android:icon="@drawable/app_logo"
         android:label="@string/app_name"
         android:roundIcon="@drawable/app_logo"
         android:supportsRtl="true"
-        android:hardwareAccelerated="false"
         android:theme="@style/Theme.AppCompat.NoActionBar"
-        android:windowSoftInputMode="adjustPan|adjustResize"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        android:windowSoftInputMode="adjustPan|adjustResize">
+        <activity
+            android:name=".activites.ViewAPostActivity"
+            android:label="@string/title_activity_view_a_post"
+            android:theme="@style/NoActionBar"></activity>
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -34,10 +37,10 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/providers_path"/>
+                android:resource="@xml/providers_path" />
         </provider>
 
-        <activity android:name=".activites.StartHuntActivity"></activity>
+        <activity android:name=".activites.StartHuntActivity" />
         <activity android:name=".activites.SearchHuntActivity" />
         <activity android:name=".activites.CreateAPostActivity" />
         <activity android:name=".activites.HomeBaseActivity" />
