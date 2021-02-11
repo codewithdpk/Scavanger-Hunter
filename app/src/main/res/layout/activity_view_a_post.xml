@@ -22,17 +22,20 @@
             android:src="@drawable/marker_pin"/>
 
         <TextView
+            android:id="@+id/txt_hunt_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/font_bold"
             android:text="Hunt Name"
             android:textSize="20dp"
+            android:textColor="@color/black"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/ic_pin"
 
             />
 
         <ImageView
+            android:id="@+id/ic_close"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_close"
@@ -47,10 +50,10 @@
         android:background="#c4c4c4"/>
 
     <fragment xmlns:map="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/map"
+        android:id="@+id/map_view_a_post"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="300dp"
         tools:context=".activites.StartHuntActivity" />
 
     <ScrollView
@@ -100,11 +103,13 @@
                     android:src="@drawable/flags"/>
 
                 <TextView
+                    android:id="@+id/txt_posts_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/font_bold"
-                    android:text="Hunt Name"
+                    android:text="Post Name"
                     android:textSize="20dp"
+                    android:textColor="@color/black"
                     android:layout_centerVertical="true"
                     android:layout_toRightOf="@id/ic_flag"
 
@@ -123,7 +128,7 @@
 
 
                 <TextView
-                    android:id="@+id/txt_hunt_name"
+                    android:id="@+id/_txt_hunt_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/font_semibold"
@@ -155,7 +160,7 @@
                     android:text="Created by "/>
 
                 <TextView
-                    android:id="@+id/tv_owner_name"
+                    android:id="@+id/txt_owner_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/font_semibold"
@@ -181,6 +186,30 @@
                     app:srb_starSize="10dp"
                     app:srb_stepSize="0.5" />
             </RelativeLayout>
+
+
+           <RelativeLayout
+               android:id="@+id/btn_learn_where_are_you"
+               android:layout_width="match_parent"
+               android:layout_height="50dp"
+               android:text="Learn where you are"
+               android:background="@drawable/btn_primary"
+               android:layout_margin="20dp"
+
+               >
+
+               <TextView
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:fontFamily="@font/font_normal"
+                   android:textColor="@color/white"
+                   android:text="Learn where you are"
+                   android:textSize="20dp"
+                   android:layout_centerInParent="true"/>
+
+
+           </RelativeLayout>
+
 
 
 

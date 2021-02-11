@@ -25,10 +25,7 @@
         android:theme="@style/Theme.AppCompat.NoActionBar"
         android:usesCleartextTraffic="true"
         android:windowSoftInputMode="adjustPan|adjustResize">
-        <activity
-            android:name=".activites.ViewAPostActivity"
-            android:label="@string/title_activity_view_a_post"
-            android:theme="@style/NoActionBar"></activity>
+        <activity android:name=".activites.LearnMoreAboutPostActivity"></activity>
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -40,6 +37,7 @@
                 android:resource="@xml/providers_path" />
         </provider>
 
+        <activity android:name=".activites.ViewAPostActivity" />
         <activity android:name=".activites.StartHuntActivity" />
         <activity android:name=".activites.SearchHuntActivity" />
         <activity android:name=".activites.CreateAPostActivity" />

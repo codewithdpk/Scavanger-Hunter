@@ -77,6 +77,8 @@ public class StartHuntActivity extends AppCompatActivity implements OnMapReadyCa
 
     RecyclerView rv_posts;
     String HuntId;
+    String HuntName;
+    String hunt_owner;
     ArrayList<PostsModal> postsList;
     ProgressDialog progressDialog;
 
@@ -173,8 +175,6 @@ public class StartHuntActivity extends AppCompatActivity implements OnMapReadyCa
     @Override
     protected void onResume() {
         super.onResume();
-
-        Log.d("ONRESUME", "OnResume called bro. " + huntSequance);
         if (currentLat!=null && currentLong!= null && postsList != null) {
             // instantiate the location manager, note you will need to request permissions in your manifest
             LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -193,8 +193,36 @@ public class StartHuntActivity extends AppCompatActivity implements OnMapReadyCa
             //Log.d("LOCATION:",location.toString());
             float distance = checkDistance(location.getLatitude(),location.getLongitude(),Double.parseDouble(postsList.get(0).getLat()),Double.parseDouble(postsList.get(0).getLong()));
             Log.d("ONRESUME",distance+"");
-            if(distance <=10.00){
+            if(distance <=20.00){
                 Utils.createToast(StartHuntActivity.this,rootView,"Cool, You have reached at posts destination. ");
+
+                try {
+                    Log.d("player_name",SharedPref.getUserInfo(StartHuntActivity.this).getString("name"));
+                    Log.d("hunt_id",HuntId);
+                    Log.d("hunt_name",HuntName);
+                    Log.d("post_id",postsList.get(0).getPost_id());
+                    Log.d("post_name",postsList.get(0).getPost_name());
+                    Log.d("player_id",SharedPref.getUserId(StartHuntActivity.this));
+                    Log.d("creator_id",hunt_owner);
+                    Log.d("post_lat",postsList.get(0).getLat());
+                    Log.d("post_long",postsList.get(0).getLong());
+
+                    Intent intent = new Intent(StartHuntActivity.this,ViewAPostActivity.class);
+                    intent.putExtra("player_name",SharedPref.getUserInfo(StartHuntActivity.this).getString("name"));
+                    intent.putExtra("hunt_id",HuntId);
+                    intent.putExtra("hunt_name",HuntName);
+                    intent.putExtra("post_id",postsList.get(0).getPost_id());
+                    intent.putExtra("post_name",postsList.get(0).getPost_name());
+                    intent.putExtra("player_id",SharedPref.getUserId(StartHuntActivity.this));
+                    intent.putExtra("creator_id",hunt_owner);
+                    intent.putExtra("post_lat",postsList.get(0).getLat());
+                    intent.putExtra("post_long",postsList.get(0).getLong());
+                    startActivity(intent);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
 
 
             }else{
@@ -291,6 +319,8 @@ public class StartHuntActivity extends AppCompatActivity implements OnMapReadyCa
                         JSONObject ownerDetails = response.getJSONObject("owner");
                         JSONObject huntDetails = response.getJSONObject("hunt");
                         JSONArray posts = response.getJSONArray("posts");
+                        HuntName = huntDetails.getString("name");
+                        hunt_owner = ownerDetails.getString("id");
                         tv_hunt_name_top.setText(huntDetails.getString("name"));
                         tv_hunt_name_bottom.setText(huntDetails.getString("name"));
                         tv_owner_name.setText(ownerDetails.getString("name"));
