@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
         android:name=".APIs.AppController"
@@ -25,7 +26,10 @@
         android:theme="@style/Theme.AppCompat.NoActionBar"
         android:usesCleartextTraffic="true"
         android:windowSoftInputMode="adjustPan|adjustResize">
-        <activity android:name=".activites.LearnMoreAboutPostActivity"></activity>
+        <activity android:name=".activites.ActivityRecordVoice">
+
+        </activity>
+        <activity android:name=".activites.LearnMoreAboutPostActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

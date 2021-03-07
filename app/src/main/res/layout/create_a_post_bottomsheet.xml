@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-
     app:behavior_hideable="false"
     app:behavior_peekHeight="200dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
@@ -135,6 +134,81 @@
                 android:textColor="#c4c4c4"
                 android:textColorHint="#c4c4c4"
                 android:textSize="15dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/font_semibold"
+                android:text="Record Details"
+                android:textColor="@color/toast_color"
+                android:textSize="15dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginVertical="20dp">
+
+                <RelativeLayout
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/record_btn_layout"
+                    >
+
+                    <ImageView
+                        android:id="@+id/ic_record_btn"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_mic"
+                        android:visibility="visible"
+                        android:layout_centerInParent="true"/>
+
+                    <ImageView
+                        android:id="@+id/ic_stop_btn"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_stop"
+                        android:visibility="gone"
+                        android:layout_centerInParent="true"/>
+
+                    <ImageView
+                        android:id="@+id/ic_play_btn"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_play"
+                        android:visibility="gone"
+                        android:layout_centerInParent="true"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/layout_voice_file"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone">
+                    
+                    <TextView
+                        android:id="@+id/tv_recorded_file_"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/font_normal"
+                        android:text="This is dummy.mp3"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:textColor="@color/toast_color_two"/>
+                    
+                    <ImageView
+                        android:id="@+id/ic_cancel_current_recording"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_close"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"/>
+                    
+                </RelativeLayout>
+
+            </LinearLayout>
 
 
             <TextView

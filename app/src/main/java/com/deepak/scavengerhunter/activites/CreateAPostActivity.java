@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
@@ -22,6 +23,8 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -39,6 +42,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -105,6 +109,9 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
+import static android.Manifest.permission.RECORD_AUDIO;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
 public class CreateAPostActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, AdapterView.OnItemSelectedListener {
     private GoogleMap mMap;
     View mapView;
@@ -126,22 +133,9 @@ public class CreateAPostActivity extends AppCompatActivity implements OnMapReady
     Button btn_create_post;
     Button btn_cancel_post;
     ImageView image_selector;
-
     Bitmap post_image = null;
-
-    public int IMAGE_CAPTURE = 1;
-    public int IMAGE_CHOOSE = 2;
-
-    /**
-     * Receiver registered with this activity to get the response from FetchAddressIntentService.
-     */
     private CreateAPostActivity.AddressResultReceiver mResultReceiver;
-    /**
-     * The formatted location address.
-     */
-    protected String mAddressOutput;
     protected String mAreaOutput;
-
     String AddressString;
     ImageView backbtn;
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
@@ -154,6 +148,26 @@ public class CreateAPostActivity extends AppCompatActivity implements OnMapReady
     Spinner ansType;
     String[] bankNames = {"Media", "Text", "Both"};
     String selectedAnswerType = null;
+    MediaRecorder myAudioRecorder;
+    String AudioSavePathInDevice = null;
+    Random random;
+    String RandomAudioFileName = "ABCDEFGHIJKLMNOP";
+    public static final int RequestPermissionCode = 1;
+
+
+    // Media Buttons
+    ImageView ic_record_button;
+    ImageView ic_play_button;
+    ImageView ic_stop_button;
+    private MediaPlayer mediaPlayer;
+    private String AudioUrl = "";
+
+    RelativeLayout recoding_layout;
+    TextView recording_file;
+    ImageView cancel_recoding;
+
+    Uri audioFile = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,7 +180,6 @@ public class CreateAPostActivity extends AppCompatActivity implements OnMapReady
         FirebaseApp.initializeApp(CreateAPostActivity.this);
 
         init();
-
 
         ansType.setOnItemSelectedListener(this);
 
@@ -226,10 +239,16 @@ public class CreateAPostActivity extends AppCompatActivity implements OnMapReady
                     if (post_image != null) {
 
                         if (selectedAnswerType != null) {
-                            //Utils.createToast(CreateAPostActivity.this,rootView,AddressString);
-                            progressDialog.show();
-                            Bitmap bt = getScaledBitmap(post_image);
-                            uploadFile(bt, post_name, AddressString, Long, lat, hunt_id, hunt_name, information, quiz, selectedAnswerType);
+                            if (audioFile == null) {
+                                Utils.createToast(CreateAPostActivity.this, rootView, "Please add details with voice notes.");
+
+                            } else {
+                                //Utils.createToast(CreateAPostActivity.this,rootView,AddressString);
+                                progressDialog.show();
+                                Bitmap bt = getScaledBitmap(post_image);
+                                uploadFile(bt, post_name, AddressString, Long, lat, hunt_id, hunt_name, information, quiz, selectedAnswerType);
+
+                            }
 
                         } else {
                             Utils.createToast(CreateAPostActivity.this, rootView, "Please select answer type.");
@@ -319,10 +338,93 @@ public class CreateAPostActivity extends AppCompatActivity implements OnMapReady
             Toast.makeText(mContext, "Location not supported in this device", Toast.LENGTH_SHORT).show();
         }
 
+        ic_record_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (checkPermission()) {
+
+                    AudioSavePathInDevice =
+                            Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +
+                                    CreateRandomAudioFileName(5) + "AudioRecording.3gp";
+
+                    createAudioMediaReady();
+
+                    try {
+                        myAudioRecorder.prepare();
+                        myAudioRecorder.start();
+                    } catch (IllegalStateException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+
+                    ic_record_button.setVisibility(View.GONE);
+                    ic_stop_button.setVisibility(View.VISIBLE);
+
+                    Toast.makeText(CreateAPostActivity.this, "Recording started",
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    requestPermission();
+                }
+            }
+        });
+
+        ic_stop_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myAudioRecorder.stop();
+                audioFile = Uri.fromFile(new File(AudioSavePathInDevice));
+                ic_stop_button.setVisibility(View.GONE);
+                ic_play_button.setVisibility(View.VISIBLE);
+                recoding_layout.setVisibility(View.VISIBLE);
+                recording_file.setText("Recording File 01");
+
+//                buttonStart.setEnabled(true);
+//                buttonStopPlayingRecording.setEnabled(false);
+
+                Toast.makeText(CreateAPostActivity.this, "Recording Completed",
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+
+        ic_play_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                ic_play_button.setVisibility(View.GONE);
+//                buttonStart.setEnabled(false);
+//                buttonStopPlayingRecording.setEnabled(true);
+
+                mediaPlayer = new MediaPlayer();
+                try {
+                    mediaPlayer.setDataSource(AudioSavePathInDevice);
+                    mediaPlayer.prepare();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                mediaPlayer.start();
+                Toast.makeText(CreateAPostActivity.this, "Recording Playing",
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+
+        cancel_recoding.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                audioFile = null;
+                AudioUrl = "";
+                recoding_layout.setVisibility(View.GONE);
+                ic_record_button.setVisibility(View.VISIBLE);
+            }
+        });
+
     }
 
 
     private void init() {
+        random = new Random();
         mLocationMarkerText = (TextView) findViewById(R.id.locationMarkertext);
         getMyCurrentLocation = findViewById(R.id.currentlocfab);
         bottom_sheet = findViewById(R.id.bottom_sheet);
@@ -335,6 +437,12 @@ public class CreateAPostActivity extends AppCompatActivity implements OnMapReady
         backbtn = findViewById(R.id.ic_back_create_a_post);
         image_selector = findViewById(R.id.image_selector);
         ansType = (Spinner) findViewById(R.id.simpleSpinner);
+        ic_play_button = findViewById(R.id.ic_play_btn);
+        ic_record_button = findViewById(R.id.ic_record_btn);
+        ic_stop_button = findViewById(R.id.ic_stop_btn);
+        recoding_layout = findViewById(R.id.layout_voice_file);
+        recording_file = findViewById(R.id.tv_recorded_file_);
+        cancel_recoding = findViewById(R.id.ic_cancel_current_recording);
         progressBar();
     }
 
@@ -422,7 +530,7 @@ public class CreateAPostActivity extends AppCompatActivity implements OnMapReady
         Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
         if (mLastLocation != null) {
-             changeMap(mLastLocation);
+            changeMap(mLastLocation);
             Log.d(TAG, "ON connected");
 
         } else
@@ -885,7 +993,7 @@ public class CreateAPostActivity extends AppCompatActivity implements OnMapReady
 
     }
 
-    private void uploadFile(Bitmap bitmap, final String post_name, String addressString, final double aLong, final double lat, String hunt_id, String hunt_name, final String information, final String quiz, final String selectedAnswerType) {
+    private void uploadFile(final Bitmap bitmap, final String post_name, final String addressString, final double aLong, final double lat, final String hunt_id, final String hunt_name, final String information, final String quiz, final String selectedAnswerType) {
         final JSONObject[] RES = {new JSONObject()};
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReferenceFromUrl("gs://scavenger-hunter-1608147586701.appspot.com");
@@ -913,27 +1021,12 @@ public class CreateAPostActivity extends AppCompatActivity implements OnMapReady
                     @Override
                     public void onSuccess(Uri uri) {
 
-                        String url = uri.toString();
-                        Log.e("TAG:", "the url is: " + url);
 
-                        JSONObject params = new JSONObject();
 
-                        try {
-                            params.put("post_name", post_name);
-                            params.put("address", AddressString);
-                            params.put("long", aLong);
-                            params.put("lat", lat);
-                            params.put("hunt_id", CreateAPostActivity.this.hunt_id);
-                            params.put("hunt_name", CreateAPostActivity.this.hunt_name);
-                            params.put("createdBy", SharedPref.getUserId(CreateAPostActivity.this));
-                            params.put("information", information);
-                            params.put("defaultQuestion", quiz);
-                            params.put("post_image", url);
-                            params.put("answerType", selectedAnswerType);
-                            createPost(CreateAPostActivity.this, params, rootView);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        String image_url = uri.toString();
+                        uploadAudio(bitmap,   post_name,  addressString,  aLong,  lat,  hunt_id,  hunt_name,   information,   quiz,   selectedAnswerType,image_url);
+
+
 
 //                        String ref = yourStorageReference.getName();
 //                        Log.e("TAG:", "the ref is: " + ref);
@@ -981,6 +1074,118 @@ public class CreateAPostActivity extends AppCompatActivity implements OnMapReady
     public void onNothingSelected(AdapterView<?> arg0) {
 // TODO Auto-generated method stub
         selectedAnswerType = null;
+    }
+
+
+    // Audio Media
+    private void createAudioMediaReady() {
+
+        myAudioRecorder = new MediaRecorder();
+        myAudioRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        myAudioRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        myAudioRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+        myAudioRecorder.setOutputFile(AudioSavePathInDevice);
+
+    }
+
+
+    public String CreateRandomAudioFileName(int string) {
+        StringBuilder stringBuilder = new StringBuilder(string);
+        int i = 0;
+        while (i < string) {
+            stringBuilder.append(RandomAudioFileName.charAt(random.nextInt(RandomAudioFileName.length())));
+
+            i++;
+        }
+        return stringBuilder.toString();
+    }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(CreateAPostActivity.this, new
+                String[]{WRITE_EXTERNAL_STORAGE, RECORD_AUDIO}, RequestPermissionCode);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case RequestPermissionCode:
+                if (grantResults.length > 0) {
+                    boolean StoragePermission = grantResults[0] ==
+                            PackageManager.PERMISSION_GRANTED;
+                    boolean RecordPermission = grantResults[1] ==
+                            PackageManager.PERMISSION_GRANTED;
+
+                    if (StoragePermission && RecordPermission) {
+                        Toast.makeText(CreateAPostActivity.this, "Permission Granted",
+                                Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(CreateAPostActivity.this, "Permission Denied", Toast.LENGTH_LONG).show();
+                    }
+                }
+                break;
+        }
+    }
+
+    public boolean checkPermission() {
+        int result = ContextCompat.checkSelfPermission(getApplicationContext(),
+                WRITE_EXTERNAL_STORAGE);
+        int result1 = ContextCompat.checkSelfPermission(getApplicationContext(),
+                RECORD_AUDIO);
+        return result == PackageManager.PERMISSION_GRANTED &&
+                result1 == PackageManager.PERMISSION_GRANTED;
+    }
+
+
+    private void uploadAudio(Bitmap bitmap, final String post_name, String addressString, final double aLong, final double lat, String hunt_id, String hunt_name, final String information, final String quiz, String selectedAnswerType, final String image_url) {
+
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+
+        StorageReference storageRef = storage.getReferenceFromUrl("gs://scavenger-hunter-1608147586701.appspot.com");
+        StorageReference riversRef = storageRef.child("recordings/" + audioFile.getLastPathSegment());
+        UploadTask uploadTask = riversRef.putFile(audioFile);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Utils.createToast(getApplicationContext(), rootView, exception.getMessage());
+                Log.d("FIREBASE", exception.getMessage());
+
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Task<Uri> firebaseUri = taskSnapshot.getStorage().getDownloadUrl();
+                firebaseUri.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+
+                        String audio_url = uri.toString();
+
+
+                        JSONObject params = new JSONObject();
+                        try {
+                            params.put("post_name", post_name);
+                            params.put("address", AddressString);
+                            params.put("long", aLong);
+                            params.put("lat", lat);
+                            params.put("hunt_id", CreateAPostActivity.this.hunt_id);
+                            params.put("hunt_name", CreateAPostActivity.this.hunt_name);
+                            params.put("createdBy", SharedPref.getUserId(CreateAPostActivity.this));
+                            params.put("information", information);
+                            params.put("defaultQuestion", quiz);
+                            params.put("post_image", image_url);
+                            params.put("answerType", CreateAPostActivity.this.selectedAnswerType);
+                            params.put("voice_url", audio_url);
+                            createPost(CreateAPostActivity.this, params, rootView);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+            }
+        });
+
     }
 
 

@@ -234,8 +234,8 @@ public class AuthActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("VOLLEY", error.toString());
-                Toast.makeText(AuthActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                Log.d("VOLLEY", error.getMessage());
+                Toast.makeText(AuthActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
 
                 pDialog.dismiss();
             }

@@ -51,6 +51,7 @@ public class HuntsAdapter extends RecyclerView.Adapter<HuntsAdapter.ViewHolder> 
         final HuntModal huntModal = hunts.get(position);
         holder.tv_huntname.setText(huntModal.getName());
         holder.tv_posts.setText(huntModal.getPosts().length()+" Posts");
+        holder.tv_hunt_owner.setText("Created by "+huntModal.getCreatedBy());
         holder.tv_startingPointName.setText(huntModal.getStartingArea());
         holder.tv_startingPointAddress.setText(huntModal.getCompleteStartingAddress());
         if(huntModal.getEndingArea().equals("none")){
@@ -89,6 +90,7 @@ public class HuntsAdapter extends RecyclerView.Adapter<HuntsAdapter.ViewHolder> 
         TextView tv_startingPointAddress;
         TextView tv_endingPointName;
         TextView tv_endingPointAddress;
+        TextView tv_hunt_owner;
         CardView card;
 
         ViewHolder(View itemView) {
@@ -100,6 +102,7 @@ public class HuntsAdapter extends RecyclerView.Adapter<HuntsAdapter.ViewHolder> 
             tv_startingPointAddress = itemView.findViewById(R.id.tv_starting_point_address);
             tv_endingPointName = itemView.findViewById(R.id.tv_ending_point_name);
             tv_endingPointAddress = itemView.findViewById(R.id.tv_ending_point_address);
+            tv_hunt_owner = itemView.findViewById(R.id.txt_hunt_owner);
 
         }
 

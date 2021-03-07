@@ -29,6 +29,7 @@ import com.deepak.scavengerhunter.Modals.HuntModal;
 import com.deepak.scavengerhunter.R;
 import com.deepak.scavengerhunter.activites.MyHuntsActivity;
 import com.deepak.scavengerhunter.classes.Utils;
+import com.facebook.shimmer.ShimmerFrameLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,6 +47,7 @@ public class MyHuntsFragment extends Fragment {
     ProgressDialog progressDialog;
 
     RelativeLayout no_hunt_layout;
+    ShimmerFrameLayout shimmerLayout;
 
     @Nullable
     @Override
@@ -60,68 +62,71 @@ public class MyHuntsFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        getAllHunts(getContext(),params,rootView);
+        getAllHunts(getContext(), params, rootView);
         return rootView;
     }
 
 
-
-
-
-
-    private void init(View view){
+    private void init(View view) {
 
         rv_myhunts = view.findViewById(R.id.rv_my_hunts);
         my_hunts = new ArrayList<>();
         no_hunt_layout = view.findViewById(R.id.layout_no_results_found);
+        shimmerLayout = view.findViewById(R.id.shimmer_view_container);
 
         progressBar();
     }
 
 
-
     private void getAllHunts(final Context context, JSONObject params, final View view) {
-        progressDialog.show();
+        //progressDialog.show();
+        shimmerLayout.setVisibility(View.VISIBLE);
+        shimmerLayout.startShimmerAnimation();
 
 
-        JsonObjectRequest jsonOblect = new JsonObjectRequest(Request.Method.POST, EndPoints.GET_ALL_HUNT, params, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonOblect = new JsonObjectRequest(Request.Method.GET, EndPoints.GET_LEADERSHIP_HUNTS, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.d("RESPONSE:",response.toString());
+                Log.d("RESPONSE:", response.toString());
 
                 try {
-                    if(response.getString("status").equals("OK")){
+                    if (response.getString("status").equals("OK")) {
                         JSONArray hunts = response.getJSONArray("hunts");
-                        if(hunts.length() !=0){
+                        if (hunts.length() != 0) {
                             no_hunt_layout.setVisibility(View.GONE);
                             rv_myhunts.setVisibility(View.VISIBLE);
-                            for( int i=0; i< hunts.length(); i++){
+                            for (int i = 0; i < hunts.length(); i++) {
                                 JSONObject hunt = hunts.getJSONObject(i);
                                 JSONObject obj = hunt.getJSONObject("hunt");
                                 JSONArray posts = hunt.getJSONArray("posts");
-                                my_hunts.add(new HuntModal(obj.getString("hunt_id"),obj.getString("createdBy"),obj.getString("name"),obj.getString("startingArea"),obj.getString("completeStartingAddress"),obj.getString("startingLong"),obj.getString("startingLat"),obj.getString("endingArea"),obj.getString("endingStartingAddress"),obj.getString("endingLong"),obj.getString("endingLat"),obj.getString("created"),obj.getString("updated"),obj.getString("status"),posts));
+                                JSONObject owner = hunt.getJSONObject("owner");
+                                my_hunts.add(new HuntModal(obj.getString("hunt_id"), owner.getString("name"), obj.getString("name"), obj.getString("startingArea"), obj.getString("completeStartingAddress"), obj.getString("startingLong"), obj.getString("startingLat"), obj.getString("endingArea"), obj.getString("endingStartingAddress"), obj.getString("endingLong"), obj.getString("endingLat"), obj.getString("created"), obj.getString("updated"), obj.getString("status"), posts));
                             }
-                            HuntsAdapter adapter = new HuntsAdapter(getContext(),my_hunts);
+                            HuntsAdapter adapter = new HuntsAdapter(getContext(), my_hunts);
                             LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
                             rv_myhunts.setLayoutManager(layoutManager);
                             rv_myhunts.setAdapter(adapter);
-                            progressDialog.dismiss();
-                        }else{
+                            shimmerLayout.stopShimmerAnimation();
+                            shimmerLayout.setVisibility(View.GONE);
+                            //progressDialog.dismiss();
+                        } else {
                             no_hunt_layout.setVisibility(View.VISIBLE);
                             rv_myhunts.setVisibility(View.GONE);
-                            progressDialog.dismiss();
+                            shimmerLayout.stopShimmerAnimation();
+                            shimmerLayout.setVisibility(View.GONE);
+                            //progressDialog.dismiss();
 
                         }
 
-                    }else{
+                    } else {
 
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    progressDialog.dismiss();
+                    //progressDialog.dismiss();
+                    shimmerLayout.stopShimmerAnimation();
+                    shimmerLayout.setVisibility(View.GONE);
                 }
-
-
 
 
                 //Toast.makeText(getApplicationContext(), "Response:  " + response.toString(), Toast.LENGTH_SHORT).show();
@@ -129,9 +134,11 @@ public class MyHuntsFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("VOLLEY",error.toString());
-                Utils.createToast(context,rootView,error.toString());
-                progressDialog.dismiss();
+                Log.d("VOLLEY", error.toString());
+                Utils.createToast(context, rootView, error.toString());
+                //progressDialog.dismiss();
+                shimmerLayout.stopShimmerAnimation();
+                shimmerLayout.setVisibility(View.GONE);
 
 
             }
@@ -147,8 +154,8 @@ public class MyHuntsFragment extends Fragment {
 
     }
 
-    private void progressBar(){
-        progressDialog=new ProgressDialog(getContext());
+    private void progressBar() {
+        progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Loading...");
         progressDialog.setCancelable(false);
     }

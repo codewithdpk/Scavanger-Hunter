@@ -26,6 +26,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -87,6 +88,7 @@ public class StartHuntActivity extends AppCompatActivity implements OnMapReadyCa
     TextView tv_owner_name;
     TextView tv_information_of_hunt;
     TextView tv_post_count;
+    ImageView ic_close_btn;
 
     GoogleMap mMap;
     View mapView;
@@ -193,7 +195,7 @@ public class StartHuntActivity extends AppCompatActivity implements OnMapReadyCa
             //Log.d("LOCATION:",location.toString());
             float distance = checkDistance(location.getLatitude(),location.getLongitude(),Double.parseDouble(postsList.get(0).getLat()),Double.parseDouble(postsList.get(0).getLong()));
             Log.d("ONRESUME",distance+"");
-            if(distance <=20.00){
+            if(distance <=10000.00){
                 Utils.createToast(StartHuntActivity.this,rootView,"Cool, You have reached at posts destination. ");
 
                 try {
@@ -229,6 +231,13 @@ public class StartHuntActivity extends AppCompatActivity implements OnMapReadyCa
                 Utils.createToast(StartHuntActivity.this,rootView,"You have not reached to destination yet, This can not be considered as a complete post.");
             }
         }
+
+        ic_close_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
     }
 
@@ -297,6 +306,7 @@ public class StartHuntActivity extends AppCompatActivity implements OnMapReadyCa
         tv_information_of_hunt = findViewById(R.id.tv_information_of_hunt);
         tv_post_count = findViewById(R.id.tv_post_count);
         btn_start_hunt = findViewById(R.id.btn_start_hunt);
+        ic_close_btn = findViewById(R.id.ic_close_btn);
         progressBar();
     }
 
@@ -320,9 +330,10 @@ public class StartHuntActivity extends AppCompatActivity implements OnMapReadyCa
                         JSONObject huntDetails = response.getJSONObject("hunt");
                         JSONArray posts = response.getJSONArray("posts");
                         HuntName = huntDetails.getString("name");
-                        hunt_owner = ownerDetails.getString("id");
+                        hunt_owner = ownerDetails.getString("name");
                         tv_hunt_name_top.setText(huntDetails.getString("name"));
                         tv_hunt_name_bottom.setText(huntDetails.getString("name"));
+                        tv_information_of_hunt.setText(posts.getJSONObject(0).getString("information"));
                         tv_owner_name.setText(ownerDetails.getString("name"));
                         //tv_information_of_hunt.setText(huntDetails.getString("information"));
                         startingLat = huntDetails.getDouble("startingLat");

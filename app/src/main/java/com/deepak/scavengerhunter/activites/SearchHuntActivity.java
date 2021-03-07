@@ -23,6 +23,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.deepak.scavengerhunter.APIs.AppController;
 import com.deepak.scavengerhunter.APIs.EndPoints;
+import com.deepak.scavengerhunter.Adaptors.HuntsAdapter;
 import com.deepak.scavengerhunter.Adaptors.MyHuntsAdaptor;
 import com.deepak.scavengerhunter.Modals.HuntModal;
 import com.deepak.scavengerhunter.Modals.People;
@@ -84,6 +85,20 @@ public class SearchHuntActivity extends AppCompatActivity {
             }
         });
 
+        ic_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+        ic_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
     }
 
     private void init(){
@@ -126,9 +141,10 @@ public class SearchHuntActivity extends AppCompatActivity {
                                     JSONObject hunt = hunts.getJSONObject(i);
                                     JSONObject obj = hunt.getJSONObject("hunt");
                                     JSONArray posts = hunt.getJSONArray("posts");
-                                    results.add(new HuntModal(obj.getString("hunt_id"),obj.getString("createdBy"),obj.getString("name"),obj.getString("startingArea"),obj.getString("completeStartingAddress"),obj.getString("startingLong"),obj.getString("startingLat"),obj.getString("endingArea"),obj.getString("endingStartingAddress"),obj.getString("endingLong"),obj.getString("endingLat"),obj.getString("created"),obj.getString("updated"),obj.getString("status"),posts));
+                                    JSONObject owner = hunt.getJSONObject("owner");
+                                    results.add(new HuntModal(obj.getString("hunt_id"),owner.getString("name"),obj.getString("name"),obj.getString("startingArea"),obj.getString("completeStartingAddress"),obj.getString("startingLong"),obj.getString("startingLat"),obj.getString("endingArea"),obj.getString("endingStartingAddress"),obj.getString("endingLong"),obj.getString("endingLat"),obj.getString("created"),obj.getString("updated"),obj.getString("status"),posts));
                                 }
-                                MyHuntsAdaptor adapter = new MyHuntsAdaptor(SearchHuntActivity.this,results);
+                                HuntsAdapter adapter = new HuntsAdapter(SearchHuntActivity.this,results);
                                 LinearLayoutManager layoutManager = new LinearLayoutManager(SearchHuntActivity.this, LinearLayoutManager.VERTICAL, false);
                                 rv_hunts.setLayoutManager(layoutManager);
                                 rv_hunts.setAdapter(adapter);

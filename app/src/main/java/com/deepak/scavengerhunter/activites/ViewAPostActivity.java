@@ -128,6 +128,16 @@ public class ViewAPostActivity extends AppCompatActivity implements OnMapReadyCa
             Toast.makeText(ViewAPostActivity.this, "Location not supported in this device", Toast.LENGTH_SHORT).show();
         }
 
+        btn_learn_where_are_you.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ViewAPostActivity.this,LearnMoreAboutPostActivity.class);
+                intent.putExtra("hunt_id",hunt_id);
+                intent.putExtra("post_id",post_id);
+                startActivity(intent);
+            }
+        });
+
     }
 
     private void init(){

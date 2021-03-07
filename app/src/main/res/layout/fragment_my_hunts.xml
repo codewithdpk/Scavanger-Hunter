@@ -97,4 +97,22 @@
 
     </RelativeLayout>
 
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_view_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp"
+        android:visibility="visible"
+        android:orientation="vertical"
+        app:duration="200">
+
+        <!-- Adding 7 rows of placeholders -->
+        <include layout="@layout/leadership_hunts_shimmer" />
+
+
+
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
 </LinearLayout>
